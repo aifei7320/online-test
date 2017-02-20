@@ -4,5 +4,6 @@
         <file>Page1.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>Connection.qml</file>
+        <file>NetworkStatus.qml</file>
     </qresource>
 </RCC>

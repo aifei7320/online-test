@@ -6,6 +6,7 @@ import QtQuick.Window 2.2
 import com.shelly 1.0
 
 Item {
+
     Rectangle{
         id:root
         width: Screen.desktopAvailableWidth > 600 ? 300 : Screen.desktopAvailableWidth
@@ -69,6 +70,7 @@ Item {
             }
 
             GroupBox{
+                id:widthAndHeight
                width: parent.width - 20
 
                 GridLayout{
@@ -88,7 +90,14 @@ Item {
                     Label {id:heightUnit; text:"mm"}
                 }
             }
+            NetworkStatus{
+                id:networkStatus
+                width:parent.width;
+                anchors.top:widthAndHeight.bottom
+                run:true
+            }
         }
+
 
         Connections{
             target:network
@@ -119,5 +128,6 @@ Item {
                 network.setServerIP("192.168.0.76");
             }
         }
+
     }
 }
