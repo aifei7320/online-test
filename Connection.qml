@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick 2.7
 import QtQuick.Controls 2.1
+import QtCharts 2.2
 
 Item {
     id: connection;
@@ -17,8 +18,8 @@ Item {
 
         Column {
             spacing: 5
-            Row{ spacing: 2; Label { text:"IP Addresss:" } TextEdit { id: ipaddr; text:"please input server IP"} }
-            Row{  Label { text:"Port:" } TextEdit { id: portNum; text:"server port"} }
+            Row{ spacing: 2; Label { text:"ip地址:" } TextEdit { id: ipaddr; text:"请输入服务器地址"} }
+            Row{  Label { text:"端口:" } TextEdit { id: portNum; text:"请输入服务器端口"} }
             Button {
                 id: conform;
 
