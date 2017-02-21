@@ -45,7 +45,9 @@ ApplicationWindow {
             height:20
             background:Item{Rectangle{anchors.fill:parent; color:"cyan"}}
             text: qsTr("First")
-            font{fontColor:"red"}
+            gradient:Gradient{
+
+            }
         }
         TabButton {
             height:20
