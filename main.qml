@@ -10,7 +10,7 @@ ApplicationWindow {
     height: Screen.desktopAvailableWidth > 600 ? 400 : Screen.desktopAvailableHeight
     title: qsTr("online-test")
 
-    SwipeView {
+    ListView {
         id: swipeView
         anchors.fill: parent
         currentIndex: tabBar.currentIndex
@@ -28,7 +28,7 @@ ApplicationWindow {
         }
         Rectangle{
             id: rect
-            x: parent.width + 1
+            x: 301
             y: 0
             Network{
                 id:network
@@ -50,48 +50,70 @@ ApplicationWindow {
                 console.log("pressed");
                 Qt.quit();
             }
+            Keys.forwardTo[tabBar]
             console.log("not in ")
         }
         states:[
             State{
                 name:"firstPage"; when:swipeView.currentIndex == 2;
-                PropertyChanges{target:rect; x:parent.width + 1}
+                PropertyChanges{target:rect; x:301}
                 PropertyChanges{target:page; x:0}
             },
             State{
                 name:"secondPage"; when:swipeView.currentIndex == 1;
                 PropertyChanges{target:rect; x:0}
-                PropertyChanges{target:page; x:0 - parent.width}
+                PropertyChanges{target:page; x:-300}
             }
         ]
 
-       transitions: Transition {
-           NumberAnimation{
-               property: "x"
-               easing.type: Easing.OutBack;
-               duration:1000
-           }
-          }
-
-
+        transitions: Transition {
+            NumberAnimation{
+                property: "x"
+                easing.type: Easing.OutBack;
+                duration:1000
+            }
+        }
 
     }
+    MouseArea{
+        property int oldx
+        anchors.fill:parent
+        onPressed:{
+            oldx = mouseX
+        }
 
+        onReleased: {
+            if((mouseX - oldx) > 0)
+                swipeView.currentIndex=2
+            else
+                swipeView.currentIndex=1
+        }
+    }
+    header: Text{
+        id:title
+
+        text:"Online-test System"
+        font{pixelSize:20; family:"Ubuntu"}
+        color:"red"
+    }
+    PageIndicator {
+         id: indicator
+
+         count: swipeView.count
+         currentIndex: swipeView.currentIndex
+
+         anchors.bottom: swipeView.bottom
+         anchors.horizontalCenter: parent.horizontalCenter
+     }
 
     footer: TabBar {
         id: tabBar
-        height:20
+        height:40
 
         currentIndex: swipeView.currentIndex
         TabButton {
-            height:20
-<<<<<<< HEAD
-            background:Item{Rectangle{anchors.fill:parent; color:"cyan"}}
+            height:40
             text: qsTr("First")
-            gradient:Gradient{
-
-            }
-=======
             background:Item{
                 Rectangle{
                     anchors.fill:parent; color:"cyan"
@@ -103,11 +125,9 @@ ApplicationWindow {
                     }
                 }
             }
-            text: 'First'
->>>>>>> 6058acc26743ccbb3b9f5c504bb70c8bdb6d00e2
         }
         TabButton {
-            height:20
+            height:40
             background:Item{
                 Rectangle{
                     anchors.fill:parent; color:"cyan"
@@ -124,10 +144,12 @@ ApplicationWindow {
         Keys.onPressed:{
             switch(event.key){
             case Qt.Key_Right:
-                currentIndex:currentIndex==1? 2: 1
+                swipeView.page.x = -301
+                swipeView.rect.x = 0
                 break;
             case Qt.Key_Left:
-                currentIndex:currentIndex==1? 2: 1
+                swipeView.rect.x = 301
+                swipeView.page.x = 0
                 break;
             }
         }

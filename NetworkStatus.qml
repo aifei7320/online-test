@@ -14,7 +14,6 @@ Item {
         switch (s){
         case Network.UnconnectedState:
             state = "Unconnected";
-            stateNum = Network.UnconnectedState;
             break;
         case Network.BoundState:
             break;
@@ -23,19 +22,22 @@ Item {
         case Network.HostLookupState:
             break;
         case Network.ConnectingState:
-            stateNum = Network.ConnectingState;
             state = "Connecting";
             break;
         case Network.ConnectedState:
-            stateNum = Network.ConnectedState;
             state = "Connected";
             break;
         case Network.ClosingState:
-            stateNum = Network.ClosingState
             state = "Closing";
             break;
 
         }
+        stateText.text=state;
+    }
+
+    onStateNumChanged:{
+        console.log("actvied")
+        stateChange(stateNum)
     }
 
     Rectangle{
