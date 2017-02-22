@@ -9,12 +9,14 @@ Network::Network(QObject *parent):QObject(parent),
     tcpSocket = new QTcpSocket;
     server = new QTcpServer;
     server->listen(QHostAddress::Any, 7321);
+    connect(server, SIGNAL(newConnection()), this, SLOT(establishNewConnection()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(errorOccur(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
             this, SIGNAL(networkStateChanged(QAbstractSocket::SocketState)));
 
+    connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(deleteTcpSocket()));
     connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
             this, SLOT(currentStateChanged(QAbstractSocket::SocketState)));
 }
@@ -107,7 +109,69 @@ void Network::currentStateChanged(QAbstractSocket::SocketState s)
     info += "192.168.0.121";
     info =info + ":" + "7321" + "@1";
     quint8 length = info.size();
-        qDebug()<<"here";
+    switch(s){
+        case QAbstractSocket::UnconnectedState:{
+        st = this->UnconnectedState;
+
+        break;
+        }
+    case QAbstractSocket::HostLookupState:{
+        st = HostLookupState;
+        break;
+        }
+    case QAbstractSocket::ConnectedState:{
+        st = ConnectedState;
+        out<<length;
+        tcpSocket->write(info.data());
+        break;
+        }
+    case QAbstractSocket::ConnectingState:{
+        st = ConnectingState;
+        break;
+        }
+    case QAbstractSocket::BoundState:{
+        st = BoundState;
+        break;
+        }
+    case QAbstractSocket::ClosingState:{
+        disconnect(tcpSocket, SIGNAL(disconnected()), this, SLOT(networkDisconnected()));
+        disconnect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
+        disconnect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+                this, SLOT(errorOccur(QAbstractSocket::SocketError)));
+        disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+                this, SIGNAL(networkStateChanged(QAbstractSocket::SocketState)));
+
+        disconnect(tcpSocket, SIGNAL(disconnected()), this, SLOT(deleteTcpSocket()));
+        disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+                this, SLOT(currentStateChanged(QAbstractSocket::SocketState)));
+        st = ClosingState;
+        break;
+        }
+    case QAbstractSocket::ListeningState:{
+        st = ListeningState;
+        break;
+        }
+    default: break;
+
+    }
+}
+
+void Network::deleteTcpSocket()
+{
+   tcpSocket->deleteLater();
+}
+
+void Network::establishNewConnection()
+{
+    qDebug()<<"new connection";
+    dataSocket = server->nextPendingConnection();
+    connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
+    connect(dataSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+            this, SLOT(dataSocketStateChanged(QAbstractSocket::SocketState)));
+}
+
+void Network::dataSocketStateChanged(QAbstractSocket::SocketState s)
+{
     switch(s){
         case QAbstractSocket::UnconnectedState:{
         st = this->UnconnectedState;
@@ -119,8 +183,6 @@ void Network::currentStateChanged(QAbstractSocket::SocketState s)
         }
     case QAbstractSocket::ConnectedState:{
         st = ConnectedState;
-        out<<length;
-        tcpSocket->write(info.data());
         qDebug()<<"kajsdlf";
         break;
         }
@@ -143,4 +205,5 @@ void Network::currentStateChanged(QAbstractSocket::SocketState s)
     default: break;
 
     }
+
 }

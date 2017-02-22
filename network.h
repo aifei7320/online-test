@@ -44,6 +44,7 @@ private:
     qreal boardWidth, boardHeight;
     QString serialNumber;
     QTcpSocket *tcpSocket;
+    QTcpSocket *dataSocket;
     QTcpServer *server;
     QString serverIP;
     quint32 serverPort;
@@ -59,6 +60,9 @@ private Q_SLOTS:
     void errorOccur(QAbstractSocket::SocketError e);
     void networkDisconnected();
     void currentStateChanged(QAbstractSocket::SocketState);
+    void dataSocketStateChanged(QAbstractSocket::SocketState);
+    void establishNewConnection();
+    void deleteTcpSocket();
 };
 
 #endif // NETWORK_H
