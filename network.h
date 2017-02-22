@@ -2,8 +2,11 @@
 #define NETWORK_H
 
 #include <QTcpSocket>
+#include <QTcpServer>
 #include <QDebug>
 #include <QObject>
+#include <QDataStream>
+#include <QHostInfo>
 
 class Network : public QObject
 {
@@ -23,6 +26,7 @@ public:
     Q_INVOKABLE void reConnect() const;
     Q_INVOKABLE void setServerIP(const QString ip);
     Q_INVOKABLE void setServerPort(const quint32 port);
+    Q_INVOKABLE void connToHost();
     quint8 state() const;
 
     enum networkState{
@@ -40,16 +44,17 @@ private:
     qreal boardWidth, boardHeight;
     QString serialNumber;
     QTcpSocket *tcpSocket;
+    QTcpServer *server;
     QString serverIP;
     quint32 serverPort;
     quint8 st;
+    QString localIP;
 
 Q_SIGNALS:
     void refresh();
     void networkStateChanged(QAbstractSocket::SocketState );
 
 private Q_SLOTS:
-    void connToHost();
     void getInfoFromHost();
     void errorOccur(QAbstractSocket::SocketError e);
     void networkDisconnected();

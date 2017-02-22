@@ -125,7 +125,8 @@ Item {
         MouseArea{
             anchors.fill:parent
             onClicked:{
-                network.setServerIP("192.168.0.76");
+                network.connToHost();
+                network.setServerIP("192.168.0.94")
             }
         }
 

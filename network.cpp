@@ -7,11 +7,16 @@ Network::Network(QObject *parent):QObject(parent),
     serverIP("192.168.0.94"), serverPort(7320)
 {
     tcpSocket = new QTcpSocket;
+    server = new QTcpServer;
+    server->listen(QHostAddress::Any, 7321);
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(errorOccur(QAbstractSocket::SocketError)));
     connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
             this, SIGNAL(networkStateChanged(QAbstractSocket::SocketState)));
+
+    connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+            this, SLOT(currentStateChanged(QAbstractSocket::SocketState)));
 }
 
 Network::~Network()
@@ -51,7 +56,8 @@ quint32 Network::getBoardTotal() const
 
 QString Network::getSerialNum() const
 {
-    return serialNumber;
+    //return serialNumber;
+    return localIP;
 }
 
 void Network::setServerIP(const QString ip)
@@ -69,7 +75,7 @@ void Network::setServerPort(const quint32 port)
 void Network::reConnect() const
 {
     tcpSocket->disconnectFromHost();
-    connect(tcpSocket, SIGNAL(disconnectFromHost()), this, SLOT(networkDisconnected()));
+    connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(networkDisconnected()));
 }
 
 void Network::errorOccur(QAbstractSocket::SocketError e)
@@ -84,7 +90,7 @@ void Network::getInfoFromHost()
 
 void Network::connToHost()
 {
-    tcpSocket->connectToHost("192.168.0.96", 7320);
+    tcpSocket->connectToHost("192.168.0.94", 7320);
 
 }
 
@@ -96,6 +102,12 @@ void Network::networkDisconnected()
 
 void Network::currentStateChanged(QAbstractSocket::SocketState s)
 {
+    QDataStream out(tcpSocket);
+    QByteArray info;
+    info += "192.168.0.121";
+    info =info + ":" + "7321" + "@1";
+    quint8 length = info.size();
+        qDebug()<<"here";
     switch(s){
         case QAbstractSocket::UnconnectedState:{
         st = this->UnconnectedState;
@@ -107,6 +119,9 @@ void Network::currentStateChanged(QAbstractSocket::SocketState s)
         }
     case QAbstractSocket::ConnectedState:{
         st = ConnectedState;
+        out<<length;
+        tcpSocket->write(info.data());
+        qDebug()<<"kajsdlf";
         break;
         }
     case QAbstractSocket::ConnectingState:{

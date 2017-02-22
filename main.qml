@@ -5,6 +5,7 @@ import QtQuick.Window 2.2
 import com.shelly 1.0
 
 ApplicationWindow {
+    id:root
     visible: true
     width: Screen.desktopAvailableWidth > 600 ? 300 : Screen.desktopAvailableWidth
     height: Screen.desktopAvailableWidth > 600 ? 400 : Screen.desktopAvailableHeight
@@ -56,13 +57,13 @@ ApplicationWindow {
         states:[
             State{
                 name:"firstPage"; when:swipeView.currentIndex == 2;
-                PropertyChanges{target:rect; x:301}
+                PropertyChanges{target:rect; x:root.width}
                 PropertyChanges{target:page; x:0}
             },
             State{
                 name:"secondPage"; when:swipeView.currentIndex == 1;
                 PropertyChanges{target:rect; x:0}
-                PropertyChanges{target:page; x:-300}
+                PropertyChanges{target:page; x:-root.width}
             }
         ]
 
@@ -75,20 +76,26 @@ ApplicationWindow {
         }
 
     }
-    MouseArea{
-        property int oldx
-        anchors.fill:parent
-        onPressed:{
-            oldx = mouseX
-        }
+    //MouseArea{
+    //    property int oldx
+    //    anchors.fill:parent
+    //    onPressed:{
+    //        oldx = mouseX
+    //    }
 
-        onReleased: {
-            if((mouseX - oldx) > 0)
-                swipeView.currentIndex=2
-            else
-                swipeView.currentIndex=1
-        }
-    }
+    //    onReleased: {
+    //        if((mouseX - oldx) > 100){
+    //            swipeView.currentIndex=2
+    //            indicator.currentIndex=2
+    //            tabBar.currentIndex=2
+    //        }
+    //        else if ((mouseX - oldx) < -100){
+    //            swipeView.currentIndex=1
+    //            indicator.currentIndex=2
+    //            tabBar.currentIndex=2
+    //        }
+    //    }
+    //}
     header: Text{
         id:title
 
@@ -144,11 +151,11 @@ ApplicationWindow {
         Keys.onPressed:{
             switch(event.key){
             case Qt.Key_Right:
-                swipeView.page.x = -301
+                swipeView.page.x = -root.width
                 swipeView.rect.x = 0
                 break;
             case Qt.Key_Left:
-                swipeView.rect.x = 301
+                swipeView.rect.x = root.width
                 swipeView.page.x = 0
                 break;
             }

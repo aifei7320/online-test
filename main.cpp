@@ -1,3 +1,14 @@
+/*************************************************************************
+    > File Name: main.cpp
+    > Author: zxf
+    > Mail: zhengxiaofeng333@163.com 
+    > Created Time: 2017年02月22日 星期三 14时57分13秒
+ ************************************************************************/
+
+#include <iostream>
+#include <unistd.h>
+using namespace std;
+
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include "network.h"
