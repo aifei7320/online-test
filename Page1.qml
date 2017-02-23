@@ -10,7 +10,7 @@ Item {
     Rectangle{
         id:root
         width: Screen.desktopAvailableWidth > 600 ? 300 : Screen.desktopAvailableWidth
-        height: Screen.desktopAvailableWidth > 600 ? 400 : Screen.desktopAvailableHeight
+        height: Screen.desktopAvailableWidth > 600 ? 500 : Screen.desktopAvailableHeight
 
         property int okCount;
         property int ngCount;
@@ -28,32 +28,27 @@ Item {
             GradientStop{position:0.0; color: "white"}
             GradientStop{position:1.0; color: "cyan"}
         }
-        Column{
-            spacing:10
-            leftPadding:10
-            rightPadding:10
-            topPadding:10
-            bottomPadding:10
+        ColumnLayout{
 
-            anchors.fill:parent
             RowLayout{
-                spacing:25
-                Layout.fillWidth: true
+                Layout.alignment: Qt.AlignCenter
 
                 Label {id:serialNum; text:"serialNum:"; horizontalAlignment: Qt.AlignCenter}
                 Label {id:dispSerialNum; text:"21352132132";horizontalAlignment:Qt.AlignRight; background:Item{Rectangle {anchors.fill: parent; color: "gray"; }}}
             }
 
             GroupBox{
-                spacing:5
-                width:parent.width - 20
+                Layout.minimumWidth: root.width - 20
+                Layout.margins:10
+                Layout.alignment: Qt.AlignHCenter
 
                 GridLayout{
                     rows: 5
                     columns: 2
                     Layout.fillWidth: true
 
-                    Label {text:qsTr("board detection"); font{pixelSize:20 }color:"brown"; width:300;background:Item{Rectangle{anchors.fill:parent; color:"gray"}} Layout.columnSpan:2;}
+                    Label {text:qsTr("board detection"); Layout.alignment: Qt.AlignHCenter;
+                        font{pixelSize:20 } color:"brown"; width:300;Layout.columnSpan:2;}
 
                     Label {id: okLabel; text:"OKCount:"; horizontalAlignment: Qt.AlignCenter}
                     Label {id:dispOKCount; color:"gray"; text:"0"; horizontalAlignment: Qt.AlignRight}
@@ -71,7 +66,10 @@ Item {
 
             GroupBox{
                 id:widthAndHeight
-               width: parent.width - 20
+               Layout.minimumWidth: root.width - 20
+               Layout.alignment: Qt.AlignHCenter
+               Layout.leftMargin:10
+               Layout.rightMargin:10
 
                 GridLayout{
                     rows: 3
@@ -79,7 +77,7 @@ Item {
                     columnSpacing: 10
                     Layout.fillWidth:true
 
-                    Label {id:boardSize; text:"board Size"; font{pixelSize:20; family:"Ubuntu"} Layout.columnSpan: 3}
+                    Label {id:boardSize; Layout.alignment: Qt.AlignHCenter; text:"board Size"; font{pixelSize:20; family:"Ubuntu"} Layout.columnSpan: 3}
 
                     Label {id:boardWidth; text:"boardWidth:"; Layout.alignment: Qt.AlignLeft}
                     Label {id:dispBoardWidth; text:"100.000"; Layout.fillWidth:true; Layout.alignment: Qt.AlignHCenter}
@@ -90,11 +88,56 @@ Item {
                     Label {id:heightUnit; text:"mm"}
                 }
             }
+            RowLayout{
+                Layout.alignment: Qt.AlignCenter
+                Layout.topMargin:5
+
+                Label{id:ip; text:"IP Addr:"}
+                TextField{
+                    id:ipdisp
+                    placeholderText: "please input server ip"
+
+                }
+            }
+
+            RowLayout{
+                Layout.alignment: Qt.AlignCenter
+                Layout.topMargin:5
+
+                Label{id:dev; text:"device:"}
+                ComboBox{
+                    id:devdisp
+                    model:{1, 2, 3, 4, 5, 6}
+                }
+            }
+
+            RowLayout{
+                spacing:20
+                Layout.alignment: Qt.AlignHCenter
+                Button{
+                    id:connectBtn
+                    text:"connect"
+                    onPressed: {
+                        network.connToHost();
+                        console.log(devdisp.currentIndex)
+                    }
+                }
+                Button{
+                    id:disconnectBtn
+                    text:"disconnect"
+                }
+            }
             NetworkStatus{
                 id:networkStatus
                 width:parent.width;
-                anchors.top:widthAndHeight.bottom
                 run:true
+            }
+
+
+            function checkIP(ipaddr){
+                if (ipaddr == "")
+                    return
+
             }
         }
 
@@ -126,13 +169,6 @@ Item {
             }
         }
 
-        MouseArea{
-            anchors.fill:parent
-            onClicked:{
-                network.connToHost();
-                network.setServerIP("192.168.0.94")
-            }
-        }
 
     }
 }

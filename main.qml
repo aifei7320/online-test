@@ -8,7 +8,7 @@ ApplicationWindow {
     id:root
     visible: true
     width: Screen.desktopAvailableWidth > 600 ? 300 : Screen.desktopAvailableWidth
-    height: Screen.desktopAvailableWidth > 600 ? 400 : Screen.desktopAvailableHeight
+    height: Screen.desktopAvailableWidth > 600 ? 500 : Screen.desktopAvailableHeight
     title: qsTr("online-test")
 
     ListView {
@@ -96,9 +96,10 @@ ApplicationWindow {
     //        }
     //    }
     //}
-    header: Text{
+    header:
+        Text{
         id:title
-
+        x: 70
         text:"Online-test System"
         font{pixelSize:20; family:"Ubuntu"}
         color:"red"
