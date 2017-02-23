@@ -36,7 +36,7 @@ Item {
     }
 
     onStateNumChanged:{
-        console.log("actvied")
+        console.log("actvied change")
         stateChange(stateNum)
     }
 
@@ -46,7 +46,7 @@ Item {
         width:parent.width;
         height:parent.height;
 
-        Text{id:stateText; text:"Nothing"; x:100}
+        Text{id:stateText; text:state; x:100}
 
         SequentialAnimation{
             id:first

@@ -10,11 +10,11 @@ Network::Network(QObject *parent):QObject(parent),
     server = new QTcpServer;
     server->listen(QHostAddress::Any, 7321);
     connect(server, SIGNAL(newConnection()), this, SLOT(establishNewConnection()));
-    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
+    //connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
             this, SLOT(errorOccur(QAbstractSocket::SocketError)));
-    connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-            this, SIGNAL(networkStateChanged(QAbstractSocket::SocketState)));
+    connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState s)),
+            this, SIGNAL(networkStateChanged(QAbstractSocket::SocketState s)));
 
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(deleteTcpSocket()));
     connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
@@ -58,8 +58,7 @@ quint32 Network::getBoardTotal() const
 
 QString Network::getSerialNum() const
 {
-    //return serialNumber;
-    return localIP;
+    return serialNumber;
 }
 
 void Network::setServerIP(const QString ip)
@@ -87,7 +86,14 @@ void Network::errorOccur(QAbstractSocket::SocketError e)
 
 void Network::getInfoFromHost()
 {
-
+    QByteArray temp;
+    while(dataSocket->bytesAvailable() < 25);
+    temp = dataSocket->read(25);
+    serialNumber = temp.left(temp.indexOf("k"));
+    boardHeight = temp.mid(temp.lastIndexOf("k") + 1, temp.indexOf("l") - temp.lastIndexOf("k") - 1).toInt();
+    boardWidth = temp.mid(temp.lastIndexOf("l") + 1, temp.indexOf("w") - temp.lastIndexOf("l") - 1).toInt();
+    qDebug()<<temp<<" "<<serialNumber<<" "<<boardHeight<<" "<<boardWidth;
+    emit refresh();
 }
 
 void Network::connToHost()
@@ -135,7 +141,7 @@ void Network::currentStateChanged(QAbstractSocket::SocketState s)
         }
     case QAbstractSocket::ClosingState:{
         disconnect(tcpSocket, SIGNAL(disconnected()), this, SLOT(networkDisconnected()));
-        disconnect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
+        //disconnect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
         disconnect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
                 this, SLOT(errorOccur(QAbstractSocket::SocketError)));
         disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
@@ -168,10 +174,13 @@ void Network::establishNewConnection()
     connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
     connect(dataSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
             this, SLOT(dataSocketStateChanged(QAbstractSocket::SocketState)));
+    st = ConnectedState;
+    emit networkStateChanged(QAbstractSocket::ConnectedState);
 }
 
 void Network::dataSocketStateChanged(QAbstractSocket::SocketState s)
 {
+    qDebug()<<"Am i in";
     switch(s){
         case QAbstractSocket::UnconnectedState:{
         st = this->UnconnectedState;

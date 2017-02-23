@@ -12,7 +12,6 @@ class Network : public QObject
 {
     Q_OBJECT
     Q_ENUMS(networkState)
-    Q_PROPERTY(quint8 state READ state NOTIFY networkStateChanged)
 public:
     Network(QObject *parent=0);
     ~Network();
@@ -27,7 +26,7 @@ public:
     Q_INVOKABLE void setServerIP(const QString ip);
     Q_INVOKABLE void setServerPort(const quint32 port);
     Q_INVOKABLE void connToHost();
-    quint8 state() const;
+    Q_INVOKABLE quint8 state() const;
 
     enum networkState{
         UnconnectedState = 0,
@@ -41,7 +40,7 @@ public:
 
 private:
     quint32 totalCount, ngCount, okCount;
-    qreal boardWidth, boardHeight;
+    quint32 boardWidth, boardHeight;
     QString serialNumber;
     QTcpSocket *tcpSocket;
     QTcpSocket *dataSocket;
@@ -49,7 +48,6 @@ private:
     QString serverIP;
     quint32 serverPort;
     quint8 st;
-    QString localIP;
 
 Q_SIGNALS:
     void refresh();

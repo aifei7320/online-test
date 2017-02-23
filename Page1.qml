@@ -15,8 +15,8 @@ Item {
         property int okCount;
         property int ngCount;
         property int totalCount;
-        property real boardWidth;
-        property real boardHeight;
+        property var boardWidth;
+        property var boardHeight;
         property string serialNum;
         property real rate;
 
@@ -105,20 +105,24 @@ Item {
                 root.okCount=network.getBoardOK();
                 root.ngCount=network.getBoardNG();
                 root.totalCount=network.getBoardTotal();
-                serialNum=network.getSerialNum();
-                boardWidth=network.getBoardWidth();
+                root.serialNum=network.getSerialNum();
+                root.boardWidth=network.getBoardWidth();
+                root.boardHeight=network.getBoardHeight();
                 dispOKCount.text=root.okCount;
                 dispNgCount.text=root.ngCount;
                 dispTotalCount.text=root.totalCount;
                 dispRate.text=(root.okCount / root.totalCount).toFixed(2);
-                console.log("actived");
+                dispBoardHeight.text=root.boardHeight;
+                dispBoardWidth.text=root.boardWidth;
+                dispSerialNum.text=root.serialNum;
+                console.log("actived refresh");
             }
         }
 
         Connections{
             target:network
             onNetworkStateChanged:{
-
+                networkStatus.stateNum=network.state()
             }
         }
 
