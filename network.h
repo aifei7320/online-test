@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QDataStream>
 #include <QHostInfo>
+#include <QRegExp>
 
 struct boardInfo{
     quint32 magicNum;//魔数默认123456,用来匹配数据
@@ -71,6 +72,7 @@ private:
 Q_SIGNALS:
     void refresh();
     void networkStateChanged(QAbstractSocket::SocketState );
+    void ipError();
 
 private Q_SLOTS:
     void getInfoFromHost();

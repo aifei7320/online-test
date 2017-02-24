@@ -3,6 +3,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.2
+import QtQuick.Dialogs 1.2
 import com.shelly 1.0
 
 Item {
@@ -21,8 +22,25 @@ Item {
         property string serialNum;
         property real rate;
 
+        signal showIpError();
+
+        onShowIpError: {
+            ipErrorHint.visible=true
+        }
+
         Network{
             id:network
+        }
+
+        MessageDialog{
+            id:ipErrorHint
+            title:"Error"
+            text:"ip address not correct\n please try again"
+            icon:StandardIcon.Critical;
+            onAccepted: {
+                ipdisp.text="";
+                ipdisp.placeholderText="like this:192.168.0.123";
+            }
         }
 
         gradient: Gradient {
@@ -140,9 +158,8 @@ Item {
                               radius: 20
                       }
                     onPressed: {
-                        network.setDevice(devdisp.text)
-                        network.connToHost();
-                        console.log(devdixp.text)
+                        network.setServerIP(ipdisp);
+                        network.setDevice(devdisp.text);
                     }
                 }
                 Button{
@@ -193,6 +210,14 @@ Item {
                 dispBoardWidth.text=root.boardWidth;
                 dispSerialNum.text=root.serialNum;
                 console.log("actived refresh");
+            }
+        }
+
+        Connections{
+            target:network
+            onIpError:{
+                ipdisp.color="red"
+                root.showIpError();
             }
         }
 

@@ -70,9 +70,13 @@ QString Network::getSerialNum() const
 
 void Network::setServerIP(const QString ip)
 {
-    serverIP = ip;
-    qDebug()<<serverIP<<endl;
-    emit refresh();
+    QRegExp re("((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))");
+    if (ip.contains(re)){
+        serverIP = ip;
+        connToHost();
+    } else {
+        emit ipError();
+    }
 }
 
 void Network::setDevice(const QString dev)
