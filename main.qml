@@ -97,12 +97,19 @@ ApplicationWindow {
     //    }
     //}
     header:
-        Text{
+        Label{
         id:title
-        x: 70
+        width:parent.width
+        horizontalAlignment:Text.AlignHCenter
         text:"Online-test System"
         font{pixelSize:20; family:"Ubuntu"}
         color:"red"
+        background: Rectangle{
+            gradient:Gradient{
+                GradientStop{position:0.0; color:"cyan"}
+                GradientStop{position:1.0; color:"white"}
+            }
+        }
     }
     PageIndicator {
          id: indicator

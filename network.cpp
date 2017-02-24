@@ -26,6 +26,13 @@ Network::~Network()
     delete tcpSocket;
 }
 
+void Network::disconn()
+{
+    if(dataSocket != NULL)
+        dataSocket->disconnectFromHost();
+    qDebug()<<"disconnect";
+}
+
 quint8 Network::state() const
 {
     return st;
@@ -68,6 +75,11 @@ void Network::setServerIP(const QString ip)
     emit refresh();
 }
 
+void Network::setDevice(const QString dev)
+{
+    deviceNumber = dev;
+}
+
 void Network::setServerPort(const quint32 port)
 {
     serverPort = port;
@@ -87,6 +99,12 @@ void Network::errorOccur(QAbstractSocket::SocketError e)
 void Network::getInfoFromHost()
 {
     QByteArray temp;
+    QDataStream in(dataSocket);
+    //struct boardInfo m;
+
+    //if(m.magicNum ==0)
+    //    return;
+    //qDebug()<<m.serialNum<<m.length<<m.total<<m.width<<m.okcount<<m.ngcount;
     while(dataSocket->bytesAvailable() < 25);
     temp = dataSocket->read(25);
     serialNumber = temp.left(temp.indexOf("k"));
@@ -98,22 +116,20 @@ void Network::getInfoFromHost()
 
 void Network::connToHost()
 {
-    tcpSocket->connectToHost("192.168.0.94", 7320);
-
+    tcpSocket->connectToHost(serverIP, 7320);
 }
 
 void Network::networkDisconnected()
 {
     tcpSocket->connectToHost(serverIP, serverPort);
-
 }
 
 void Network::currentStateChanged(QAbstractSocket::SocketState s)
 {
     QDataStream out(tcpSocket);
     QByteArray info;
-    info += "192.168.0.121";
-    info =info + ":" + "7321" + "@1";
+    info =info + "7321" + "@" + QByteArray(deviceNumber.toLocal8Bit());
+    qDebug()<<info;
     quint8 length = info.size();
     switch(s){
         case QAbstractSocket::UnconnectedState:{
@@ -140,16 +156,16 @@ void Network::currentStateChanged(QAbstractSocket::SocketState s)
         break;
         }
     case QAbstractSocket::ClosingState:{
-        disconnect(tcpSocket, SIGNAL(disconnected()), this, SLOT(networkDisconnected()));
-        //disconnect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
-        disconnect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
-                this, SLOT(errorOccur(QAbstractSocket::SocketError)));
-        disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-                this, SIGNAL(networkStateChanged(QAbstractSocket::SocketState)));
+        //disconnect(tcpSocket, SIGNAL(disconnected()), this, SLOT(networkDisconnected()));
+        ////disconnect(tcpSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
+        //disconnect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+        //        this, SLOT(errorOccur(QAbstractSocket::SocketError)));
+        //disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+        //        this, SIGNAL(networkStateChanged(QAbstractSocket::SocketState)));
 
-        disconnect(tcpSocket, SIGNAL(disconnected()), this, SLOT(deleteTcpSocket()));
-        disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-                this, SLOT(currentStateChanged(QAbstractSocket::SocketState)));
+        //disconnect(tcpSocket, SIGNAL(disconnected()), this, SLOT(deleteTcpSocket()));
+        //disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+        //        this, SLOT(currentStateChanged(QAbstractSocket::SocketState)));
         st = ClosingState;
         break;
         }
@@ -164,16 +180,16 @@ void Network::currentStateChanged(QAbstractSocket::SocketState s)
 
 void Network::deleteTcpSocket()
 {
-   tcpSocket->deleteLater();
+   //tcpSocket->deleteLater();
 }
 
 void Network::establishNewConnection()
 {
-    qDebug()<<"new connection";
     dataSocket = server->nextPendingConnection();
     connect(dataSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
     connect(dataSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
             this, SLOT(dataSocketStateChanged(QAbstractSocket::SocketState)));
+    connect(dataSocket, SIGNAL(disconnected()), this, SLOT(deleteDataSocket()));
     st = ConnectedState;
     emit networkStateChanged(QAbstractSocket::ConnectedState);
 }
@@ -184,30 +200,40 @@ void Network::dataSocketStateChanged(QAbstractSocket::SocketState s)
     switch(s){
         case QAbstractSocket::UnconnectedState:{
         st = this->UnconnectedState;
+        emit networkStateChanged(QAbstractSocket::UnconnectedState);
         break;
         }
     case QAbstractSocket::HostLookupState:{
         st = HostLookupState;
+        emit networkStateChanged(QAbstractSocket::HostLookupState);
         break;
         }
     case QAbstractSocket::ConnectedState:{
         st = ConnectedState;
-        qDebug()<<"kajsdlf";
+        emit networkStateChanged(QAbstractSocket::ConnectedState);
+        qDebug()<<"ConnectedState";
         break;
         }
     case QAbstractSocket::ConnectingState:{
+        emit networkStateChanged(QAbstractSocket::ConnectingState);
         st = ConnectingState;
         break;
         }
     case QAbstractSocket::BoundState:{
+        emit networkStateChanged(QAbstractSocket::BoundState);
         st = BoundState;
         break;
         }
     case QAbstractSocket::ClosingState:{
+        emit networkStateChanged(QAbstractSocket::ClosingState);
+        disconnect(dataSocket, SIGNAL(readyRead()), this, SLOT(getInfoFromHost()));
+        disconnect(dataSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+                this, SLOT(dataSocketStateChanged(QAbstractSocket::SocketState)));
         st = ClosingState;
         break;
         }
     case QAbstractSocket::ListeningState:{
+        emit networkStateChanged(QAbstractSocket::ListeningState);
         st = ListeningState;
         break;
         }
@@ -215,4 +241,12 @@ void Network::dataSocketStateChanged(QAbstractSocket::SocketState s)
 
     }
 
+}
+
+void Network::deleteDataSocket()
+{
+    disconnect(dataSocket, SIGNAL(disconnected()), this, SLOT(deleteDataSocket()));
+    //dataSocket->deleteLater();
+    st = QAbstractSocket::UnconnectedState;
+    emit networkStateChanged(QAbstractSocket::UnconnectedState);
 }

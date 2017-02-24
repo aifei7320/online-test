@@ -6,6 +6,7 @@ import QtQuick.Window 2.2
 import com.shelly 1.0
 
 Item {
+    property alias boardSize: boardSize
 
     Rectangle{
         id:root
@@ -15,8 +16,8 @@ Item {
         property int okCount;
         property int ngCount;
         property int totalCount;
-        property var boardWidth;
-        property var boardHeight;
+        property int boardWidth;
+        property int boardHeight;
         property string serialNum;
         property real rate;
 
@@ -31,10 +32,12 @@ Item {
         ColumnLayout{
 
             RowLayout{
-                Layout.alignment: Qt.AlignCenter
+                Layout.alignment: Qt.AlignLeft
+                Layout.topMargin:20
+                Layout.leftMargin:10
 
-                Label {id:serialNum; text:"serialNum:"; horizontalAlignment: Qt.AlignCenter}
-                Label {id:dispSerialNum; text:"21352132132";horizontalAlignment:Qt.AlignRight; background:Item{Rectangle {anchors.fill: parent; color: "gray"; }}}
+                Label {id:serialNum; text:"serialNum:"; font{pixelSize:16; bold:true }Layout.alignment:Qt.AlignLeft}
+                Label {id:dispSerialNum; text:"";horizontalAlignment:Qt.AlignRight; background:Item{Rectangle {anchors.fill: parent; color: "gray"; }}}
             }
 
             GroupBox{
@@ -43,24 +46,33 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
 
                 GridLayout{
+                    width: parent.width
+                    height: 129
                     rows: 5
-                    columns: 2
+                    columns: 3
                     Layout.fillWidth: true
+                    columnSpacing: 10
 
-                    Label {text:qsTr("board detection"); Layout.alignment: Qt.AlignHCenter;
-                        font{pixelSize:20 } color:"brown"; width:300;Layout.columnSpan:2;}
+                    Label {id:boardDetection; text:"board detection";
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                        font{pixelSize:20;bold:true; family:"Ubuntu" } color:"brown";
+                        Layout.columnSpan:3; horizontalAlignment: Text.AlignHCenter}
 
                     Label {id: okLabel; text:"OKCount:"; horizontalAlignment: Qt.AlignCenter}
-                    Label {id:dispOKCount; color:"gray"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispOKCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Text.AlignRight}
+                    Label {id:dispOKUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
                     Label {id: ngLabel; text:"NGCount:"; horizontalAlignment: Qt.AlignCenter}
-                    Label {id:dispNgCount; color:"gray"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispNgCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispNgUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
                     Label {id: totalLabel; text:"TotalCount:"; horizontalAlignment: Qt.AlignCenter}
-                    Label {id: dispTotalCount; color:"gray"; text:"1"; horizontalAlignment: Qt.AlignRight}
+                    Label {id: dispTotalCount; Layout.fillWidth:true; color:"black"; text:"1";  horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispTotalUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
                     Label {id: rateLabel; text:"Rate:"; horizontalAlignment: Qt.AlignCenter}
-                    Label {id:dispRate; color:"gray"; text:"0.0" ;horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispRate; Layout.fillWidth:true; color:"black"; text:"0" ;horizontalAlignment: Text.AlignRight}
+                    Label {id:dispRateUnit; Layout.minimumWidth:30; color:"black"; text:"%"; horizontalAlignment:Text.AlignRight}
                 }
             }
 
@@ -71,68 +83,90 @@ Item {
                Layout.leftMargin:10
                Layout.rightMargin:10
 
-                GridLayout{
+               GridLayout{
+                   width: parent.width
+                   height: 67
                     rows: 3
                     columns: 3
                     columnSpacing: 10
                     Layout.fillWidth:true
 
-                    Label {id:boardSize; Layout.alignment: Qt.AlignHCenter; text:"board Size"; font{pixelSize:20; family:"Ubuntu"} Layout.columnSpan: 3}
+                    Label {id:boardSize; text:"board Size"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
+                        font{pixelSize:20;bold:true; family:"Ubuntu"} Layout.columnSpan: 3}
 
                     Label {id:boardWidth; text:"boardWidth:"; Layout.alignment: Qt.AlignLeft}
-                    Label {id:dispBoardWidth; text:"100.000"; Layout.fillWidth:true; Layout.alignment: Qt.AlignHCenter}
-                    Label {id:widthUnit; text:"mm"; Layout.alignment: Qt.AlignRight}
+                    Label {id:dispBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
+                    Label {id:widthUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
 
                     Label {id:boardHeight; text:"boardHeight:"}
-                    Label {id:dispBoardHeight; text:"0.0"}
-                    Label {id:heightUnit; text:"mm"}
+                    Label {id:dispBoardHeight; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
+                    Label {id:heightUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
                 }
             }
             RowLayout{
-                Layout.alignment: Qt.AlignCenter
+                Layout.alignment: Qt.AlignLeft
                 Layout.topMargin:5
 
-                Label{id:ip; text:"IP Addr:"}
+                Label{id:ip; text:"IP Addr:"; Layout.leftMargin:10}
                 TextField{
                     id:ipdisp
+                    Layout.alignment: Qt.AlignRight
                     placeholderText: "please input server ip"
 
                 }
             }
 
             RowLayout{
-                Layout.alignment: Qt.AlignCenter
+                Layout.alignment: Qt.AlignLeft
                 Layout.topMargin:5
 
-                Label{id:dev; text:"device:"}
-                ComboBox{
-                    id:devdisp
-                    model:{1, 2, 3, 4, 5, 6}
-                }
+                Label{id:dev; text:"Device: ";width:ip.width;  Layout.leftMargin:10}
+                TextField{id:devdisp;Layout.alignment: Qt.AlignRight; placeholderText:"device id" }
             }
 
             RowLayout{
+                id:btnlayout
                 spacing:20
                 Layout.alignment: Qt.AlignHCenter
                 Button{
                     id:connectBtn
+                    height:ip.height
                     text:"connect"
+                    background: Rectangle {
+                              implicitWidth: 100
+                              implicitHeight: 40
+                              opacity: enabled ? 1 : 0.3
+                              color: connectBtn.down ? "#d0d0d0" : "#e0e0e0"
+                              radius: 20
+                      }
                     onPressed: {
+                        network.setDevice(devdisp.text)
                         network.connToHost();
-                        console.log(devdisp.currentIndex)
+                        console.log(devdixp.text)
                     }
                 }
                 Button{
                     id:disconnectBtn
+                    height:ip.height
                     text:"disconnect"
+                    background: Rectangle {
+                              implicitWidth: 100
+                              implicitHeight: 40
+                              opacity: enabled ? 1 : 0.3
+                              color: disconnectBtn.down ? "#d0d0d0" : "#e0e0e0"
+                              radius: 20
+                          }
+                    onClicked:{
+                        network.disconn();
+                    }
                 }
             }
             NetworkStatus{
                 id:networkStatus
                 width:parent.width;
+                anchors.top:btnlayout.bottom
                 run:true
             }
-
 
             function checkIP(ipaddr){
                 if (ipaddr == "")
@@ -166,6 +200,8 @@ Item {
             target:network
             onNetworkStateChanged:{
                 networkStatus.stateNum=network.state()
+                console.log("state changed")
+                console.log(networkStatus.stateNum)
             }
         }
 

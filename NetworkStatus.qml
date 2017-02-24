@@ -14,6 +14,8 @@ Item {
         switch (s){
         case Network.UnconnectedState:
             state = "Unconnected";
+            stateText.color="red";
+            run=false;
             break;
         case Network.BoundState:
             break;
@@ -26,6 +28,8 @@ Item {
             break;
         case Network.ConnectedState:
             state = "Connected";
+            stateText.color="green";
+            run=true;
             break;
         case Network.ClosingState:
             state = "Closing";
@@ -33,10 +37,10 @@ Item {
 
         }
         stateText.text=state;
+        console.log("actvied change")
     }
 
     onStateNumChanged:{
-        console.log("actvied change")
         stateChange(stateNum)
     }
 
@@ -45,6 +49,8 @@ Item {
 
         width:parent.width;
         height:parent.height;
+        anchors.top:parent.top
+        anchors.bottom:parent.bottom
 
         Text{id:stateText; text:state; x:100}
 
