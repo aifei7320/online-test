@@ -3,7 +3,7 @@
 
 Network::Network(QObject *parent):QObject(parent),
     ngCount(10), okCount(100), totalCount(110),
-    boardHeight(1.0), boardWidth(1.0),
+    boardLength(1.0), boardWidth(1.0),
     serverIP("192.168.0.94"), serverPort(7320)
 {
     tcpSocket = new QTcpSocket;
@@ -38,9 +38,9 @@ quint8 Network::state() const
     return st;
 }
 
-quint32 Network::getBoardHeight() const
+quint32 Network::getBoardLength() const
 {
-    return boardHeight;
+    return boardLength;
 }
 
 quint32 Network::getBoardWidth() const
@@ -71,6 +71,7 @@ QString Network::getSerialNum() const
 void Network::setServerIP(const QString ip)
 {
     QRegExp re("((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))");
+    qDebug()<<ip;
     if (ip.contains(re)){
         serverIP = ip;
         connToHost();
@@ -111,16 +112,17 @@ void Network::getInfoFromHost()
     //qDebug()<<m.serialNum<<m.length<<m.total<<m.width<<m.okcount<<m.ngcount;
     while(dataSocket->bytesAvailable() < 25);
     temp = dataSocket->read(25);
-    serialNumber = temp.left(temp.indexOf("k"));
-    boardHeight = temp.mid(temp.lastIndexOf("k") + 1, temp.indexOf("l") - temp.lastIndexOf("k") - 1).toInt();
+    serialNumber = temp.left(temp.indexOf("s"));
+    boardLength = temp.mid(temp.lastIndexOf("s") + 1, temp.indexOf("l") - temp.lastIndexOf("s") - 1).toInt();
     boardWidth = temp.mid(temp.lastIndexOf("l") + 1, temp.indexOf("w") - temp.lastIndexOf("l") - 1).toInt();
-    qDebug()<<temp<<" "<<serialNumber<<" "<<boardHeight<<" "<<boardWidth;
+    qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
     emit refresh();
 }
 
 void Network::connToHost()
 {
     tcpSocket->connectToHost(serverIP, 7320);
+    qDebug()<<serverIP;
 }
 
 void Network::networkDisconnected()

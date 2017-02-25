@@ -129,6 +129,8 @@ Item {
                 TextField{
                     id:ipdisp
                     Layout.alignment: Qt.AlignRight
+                    Layout.fillWidth: true
+                    Layout.rightMargin: 10
                     placeholderText: "please input server ip"
 
                 }
@@ -139,7 +141,7 @@ Item {
                 Layout.topMargin:5
 
                 Label{id:dev; text:"Device: ";width:ip.width;  Layout.leftMargin:10}
-                TextField{id:devdisp;Layout.alignment: Qt.AlignRight; placeholderText:"device id" }
+                TextField{id:devdisp;Layout.rightMargin:10; Layout.fillWidth:true; Layout.alignment: Qt.AlignRight; placeholderText:"device id" }
             }
 
             RowLayout{
@@ -158,7 +160,7 @@ Item {
                               radius: 20
                       }
                     onPressed: {
-                        network.setServerIP(ipdisp);
+                        network.setServerIP(ipdisp.text);
                         network.setDevice(devdisp.text);
                     }
                 }
@@ -201,7 +203,7 @@ Item {
                 root.totalCount=network.getBoardTotal();
                 root.serialNum=network.getSerialNum();
                 root.boardWidth=network.getBoardWidth();
-                root.boardHeight=network.getBoardHeight();
+                root.boardHeight=network.getBoardLength();
                 dispOKCount.text=root.okCount;
                 dispNgCount.text=root.ngCount;
                 dispTotalCount.text=root.totalCount;

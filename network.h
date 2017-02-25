@@ -38,7 +38,7 @@ public:
     Q_INVOKABLE quint32 getBoardTotal() const;
     Q_INVOKABLE QString getSerialNum()const ;
     Q_INVOKABLE quint32 getBoardWidth() const ;
-    Q_INVOKABLE quint32 getBoardHeight() const;
+    Q_INVOKABLE quint32 getBoardLength() const;
     Q_INVOKABLE void reConnect() const;
     Q_INVOKABLE void setServerIP(const QString ip);
     Q_INVOKABLE void setServerPort(const quint32 port);
@@ -59,7 +59,7 @@ public:
 
 private:
     quint32 totalCount, ngCount, okCount;
-    quint32 boardWidth, boardHeight;
+    quint32 boardWidth, boardLength;
     QString serialNumber;
     QTcpSocket *tcpSocket;
     QTcpSocket *dataSocket;
