@@ -10,16 +10,16 @@
 #include <QRegExp>
 
 struct boardInfo{
-    quint32 magicNum;//魔数默认123456,用来匹配数据
-    char* serialNum;//序列号
-    quint16 length;//长度信息
-    quint16 width;//宽度信息
-    quint32 total;//总数信息
-    quint32 ngcount;//有缺陷板数量
-    quint32 okcount;//完美板数量
-    quint8 lengthMatch;//指示板长是否匹配 匹配为0, 不匹配为除零外任意数
-    quint8 widthMatch;//指示板宽是否匹配 匹配为0, 不匹配为除零外任意数
-    quint8 boardPerfect;//指示是否有缺陷 完美0, 不不完美为除零外任意数
+    qint32 magicNum=-1;//魔数默认123456,用来匹配数据
+    QString serialNum;//序列号
+    qint16 length=-1;//长度信息
+    qint16 width=-1;//宽度信息
+    qint32 total=-1;//总数信息
+    qint32 ngcount=-1;//有缺陷板数量
+    qint32 okcount=-1;//完美板数量
+    qint8 lengthMatch=-1;//指示板长是否匹配 匹配为0, 不匹配为除零外任意数
+    qint8 widthMatch=-1;//指示板宽是否匹配 匹配为0, 不匹配为除零外任意数
+    qint8 boardPerfect=-1;//指示是否有缺陷 完美0, 不不完美为除零外任意数
 
 };
 
@@ -96,6 +96,7 @@ inline QDataStream &operator>>(QDataStream &in, struct boardInfo &board)
     in>>board.serialNum>> board.length>> board.width>>
         board.total>> board.ngcount>> board.okcount>>
             board.lengthMatch>> board.widthMatch>> board.boardPerfect;
+    qDebug()<< board.magicNum<< board.length<< board.boardPerfect<< board.width<< board.serialNum<< board.total;
     return in;
 }
 

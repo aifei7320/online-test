@@ -18,7 +18,7 @@ Item {
         property int ngCount;
         property int totalCount;
         property int boardWidth;
-        property int boardHeight;
+        property int boardLength;
         property string serialNum;
         property real rate;
 
@@ -116,7 +116,7 @@ Item {
                     Label {id:dispBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
                     Label {id:widthUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
 
-                    Label {id:boardHeight; text:"boardHeight:"}
+                    Label {id:boardLength; text:"boardLength:"}
                     Label {id:dispBoardHeight; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
                     Label {id:heightUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
                 }
@@ -203,12 +203,12 @@ Item {
                 root.totalCount=network.getBoardTotal();
                 root.serialNum=network.getSerialNum();
                 root.boardWidth=network.getBoardWidth();
-                root.boardHeight=network.getBoardLength();
+                root.boardLength=network.getBoardLength();
                 dispOKCount.text=root.okCount;
                 dispNgCount.text=root.ngCount;
                 dispTotalCount.text=root.totalCount;
                 dispRate.text=(root.okCount / root.totalCount).toFixed(2);
-                dispBoardHeight.text=root.boardHeight;
+                dispBoardHeight.text=root.boardLength;
                 dispBoardWidth.text=root.boardWidth;
                 dispSerialNum.text=root.serialNum;
                 console.log("actived refresh");

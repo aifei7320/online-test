@@ -105,17 +105,25 @@ void Network::getInfoFromHost()
 {
     QByteArray temp;
     QDataStream in(dataSocket);
-    //struct boardInfo m;
+    struct boardInfo m;
 
     //if(m.magicNum ==0)
     //    return;
     //qDebug()<<m.serialNum<<m.length<<m.total<<m.width<<m.okcount<<m.ngcount;
-    while(dataSocket->bytesAvailable() < 25);
-    temp = dataSocket->read(25);
-    serialNumber = temp.left(temp.indexOf("s"));
-    boardLength = temp.mid(temp.lastIndexOf("s") + 1, temp.indexOf("l") - temp.lastIndexOf("s") - 1).toInt();
-    boardWidth = temp.mid(temp.lastIndexOf("l") + 1, temp.indexOf("w") - temp.lastIndexOf("l") - 1).toInt();
-    qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
+    //while(dataSocket->bytesAvailable() < 25);
+    //temp = dataSocket->read(25);
+    //serialNumber = temp.left(temp.indexOf("s"));
+    //boardLength = temp.mid(temp.lastIndexOf("s") + 1, temp.indexOf("l") - temp.lastIndexOf("s") - 1).toInt();
+    //boardWidth = temp.mid(temp.lastIndexOf("l") + 1, temp.indexOf("w") - temp.lastIndexOf("l") - 1).toInt();
+    in>>m;
+    serialNumber = m.serialNum;
+    boardWidth = m.width;
+    boardLength = m.length;
+    okCount = m.okcount == -1 ? 0 : m.okcount;
+    ngCount = m.ngcount == -1 ? 0 : m.ngcount;
+    totalCount = m.total == -1 ? 0 : m.total;
+    qDebug()<< m.magicNum<< m.length<< m.boardPerfect<< m.width<< m.serialNum<< m.total;
+    //qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
     emit refresh();
 }
 
