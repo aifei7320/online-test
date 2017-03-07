@@ -20,6 +20,8 @@ Item {
         property int boardWidth;
         property int boardLength;
         property string serialNum;
+        property int boardWidthMatch;
+        property int boardLengthMatch;
         property real rate;
 
         signal showIpError();
@@ -35,11 +37,11 @@ Item {
         MessageDialog{
             id:ipErrorHint
             title:"Error"
-            text:"ip address not correct\n please try again"
+            text:"ip地址配置不正确\n请重新尝试"
             icon:StandardIcon.Critical;
             onAccepted: {
                 ipdisp.text="";
-                ipdisp.placeholderText="like this:192.168.0.123";
+                ipdisp.placeholderText="192.168.0.123";
             }
         }
 
@@ -54,8 +56,8 @@ Item {
                 Layout.topMargin:20
                 Layout.leftMargin:10
 
-                Label {id:serialNum; text:"serialNum:"; font{pixelSize:16; bold:true }Layout.alignment:Qt.AlignLeft}
-                Label {id:dispSerialNum; text:"";horizontalAlignment:Qt.AlignRight; background:Item{Rectangle {anchors.fill: parent; color: "gray"; }}}
+                Label {id:serialNum; text:"条码:"; font{pixelSize:16; bold:true }Layout.alignment:Qt.AlignLeft}
+                Label {id:dispSerialNum; text:"";horizontalAlignment:Qt.AlignRight; background:Item{Rectangle {anchors.fill: parent; color: "white"; }}}
             }
 
             GroupBox{
@@ -71,24 +73,24 @@ Item {
                     Layout.fillWidth: true
                     columnSpacing: 10
 
-                    Label {id:boardDetection; text:"board detection";
+                    Label {id:boardDetection; text:"封边检测";
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         font{pixelSize:20;bold:true; family:"Ubuntu" } color:"brown";
                         Layout.columnSpan:3; horizontalAlignment: Text.AlignHCenter}
 
-                    Label {id: okLabel; text:"OKCount:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id: okLabel; text:"完好数量:"; horizontalAlignment: Qt.AlignCenter}
                     Label {id:dispOKCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Text.AlignRight}
                     Label {id:dispOKUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
-                    Label {id: ngLabel; text:"NGCount:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id: ngLabel; text:"缺陷数量:"; horizontalAlignment: Qt.AlignCenter}
                     Label {id:dispNgCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
                     Label {id:dispNgUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
-                    Label {id: totalLabel; text:"TotalCount:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id: totalLabel; text:"总数量:"; horizontalAlignment: Qt.AlignCenter}
                     Label {id: dispTotalCount; Layout.fillWidth:true; color:"black"; text:"1";  horizontalAlignment: Qt.AlignRight}
                     Label {id:dispTotalUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
-                    Label {id: rateLabel; text:"Rate:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id: rateLabel; text:"缺陷率:"; horizontalAlignment: Qt.AlignCenter}
                     Label {id:dispRate; Layout.fillWidth:true; color:"black"; text:"0" ;horizontalAlignment: Text.AlignRight}
                     Label {id:dispRateUnit; Layout.minimumWidth:30; color:"black"; text:"%"; horizontalAlignment:Text.AlignRight}
                 }
@@ -109,15 +111,15 @@ Item {
                     columnSpacing: 10
                     Layout.fillWidth:true
 
-                    Label {id:boardSize; text:"board Size"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
+                    Label {id:boardSize; text:"木板尺寸测量"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
                         font{pixelSize:20;bold:true; family:"Ubuntu"} Layout.columnSpan: 3}
 
-                    Label {id:boardWidth; text:"boardWidth:"; Layout.alignment: Qt.AlignLeft}
+                    Label {id:boardWidth; text:"木板宽度:"; Layout.alignment: Qt.AlignLeft}
                     Label {id:dispBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
                     Label {id:widthUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
 
-                    Label {id:boardLength; text:"boardLength:"}
-                    Label {id:dispBoardHeight; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
+                    Label {id:boardLength; text:"木板长度:"}
+                    Label {id:dispBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
                     Label {id:heightUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
                 }
             }
@@ -125,13 +127,13 @@ Item {
                 Layout.alignment: Qt.AlignLeft
                 Layout.topMargin:5
 
-                Label{id:ip; text:"IP Addr:"; Layout.leftMargin:10}
+                Label{id:ip; text:"IP  地址:   "; Layout.leftMargin:10}
                 TextField{
                     id:ipdisp
                     Layout.alignment: Qt.AlignRight
                     Layout.fillWidth: true
                     Layout.rightMargin: 10
-                    placeholderText: "please input server ip"
+                    placeholderText: "请输入服务器ip地址"
 
                 }
             }
@@ -140,20 +142,21 @@ Item {
                 Layout.alignment: Qt.AlignLeft
                 Layout.topMargin:5
 
-                Label{id:dev; text:"Device: ";width:ip.width;  Layout.leftMargin:10}
-                TextField{id:devdisp;Layout.rightMargin:10; Layout.fillWidth:true; Layout.alignment: Qt.AlignRight; placeholderText:"device id" }
+                Label{id:dev; text:"设备编号: ";width:ip.width;  Layout.leftMargin:10}
+                TextField{id:devdisp;Layout.rightMargin:10; Layout.fillWidth:true; Layout.alignment: Qt.AlignRight; placeholderText:"设备编号" }
             }
 
             RowLayout{
                 id:btnlayout
                 spacing:20
+                Layout.topMargin:50
                 Layout.alignment: Qt.AlignHCenter
                 Button{
                     id:connectBtn
                     height:ip.height
-                    text:"connect"
+                    text:"连接"
                     background: Rectangle {
-                              implicitWidth: 100
+                              implicitWidth: 140
                               implicitHeight: 40
                               opacity: enabled ? 1 : 0.3
                               color: connectBtn.down ? "#d0d0d0" : "#e0e0e0"
@@ -167,9 +170,9 @@ Item {
                 Button{
                     id:disconnectBtn
                     height:ip.height
-                    text:"disconnect"
+                    text:"断开"
                     background: Rectangle {
-                              implicitWidth: 100
+                              implicitWidth: 140
                               implicitHeight: 40
                               opacity: enabled ? 1 : 0.3
                               color: disconnectBtn.down ? "#d0d0d0" : "#e0e0e0"
@@ -204,21 +207,27 @@ Item {
                 root.serialNum=network.getSerialNum();
                 root.boardWidth=network.getBoardWidth();
                 root.boardLength=network.getBoardLength();
+                root.boardLengthMatch = network.getBoardLengthMatch();
+                root.boardWidthMatch = network.getBoardWidthMatch();
                 dispOKCount.text=root.okCount;
                 dispNgCount.text=root.ngCount;
                 dispTotalCount.text=root.totalCount;
-                dispRate.text=(root.okCount / root.totalCount).toFixed(2);
-                dispBoardHeight.text=root.boardLength;
+                dispRate.text=root.totalCount == 0 ? 0 : (root.okCount / root.totalCount * 100.0).toFixed(2);
+                dispBoardLength.text=root.boardLength;
                 dispBoardWidth.text=root.boardWidth;
                 dispSerialNum.text=root.serialNum;
+                boardWidth.color=root.boardWidthMatch ? "black" : "red"
+                dispBoardWidth.color=root.boardWidthMatch ? "black" : "red"
+                boardLength.color=root.boardLengthMatch ? "black" : "red"
+                dispBoardLength.color=root.boardLengthMatch ? "black" : "red"
                 console.log("actived refresh");
+                console.log(root.boardLength);
             }
         }
 
         Connections{
             target:network
             onIpError:{
-                ipdisp.color="red"
                 root.showIpError();
             }
         }

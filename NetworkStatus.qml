@@ -13,7 +13,7 @@ Item {
     function stateChange(s){
         switch (s){
         case Network.UnconnectedState:
-            state = "Unconnected";
+            state = "链接已断开";
             stateText.color="red";
             run=false;
             break;
@@ -24,15 +24,15 @@ Item {
         case Network.HostLookupState:
             break;
         case Network.ConnectingState:
-            state = "Connecting";
+            state = "正在连接";
             break;
         case Network.ConnectedState:
-            state = "Connected";
+            state = "已连接";
             stateText.color="green";
             run=true;
             break;
         case Network.ClosingState:
-            state = "Closing";
+            state = "正在关闭";
             break;
 
         }

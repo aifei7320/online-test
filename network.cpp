@@ -2,7 +2,7 @@
 #include "network.h"
 
 Network::Network(QObject *parent):QObject(parent),
-    ngCount(10), okCount(100), totalCount(110),
+    ngCount(0), okCount(0), totalCount(0),
     boardLength(1.0), boardWidth(1.0),
     serverIP("192.168.0.94"), serverPort(7320)
 {
@@ -46,6 +46,16 @@ quint32 Network::getBoardLength() const
 quint32 Network::getBoardWidth() const
 {
     return boardWidth;
+}
+
+qint8 Network::getBoardLengthMatch() const
+{
+    return boardLengthMatch;
+}
+
+qint8 Network::getBoardWidthMatch() const
+{
+    return boardWidthMatch;
 }
 
 quint32 Network::getBoardNG() const
@@ -119,9 +129,10 @@ void Network::getInfoFromHost()
     serialNumber = m.serialNum;
     boardWidth = m.width;
     boardLength = m.length;
-    okCount = m.okcount == -1 ? 0 : m.okcount;
-    ngCount = m.ngcount == -1 ? 0 : m.ngcount;
-    totalCount = m.total == -1 ? 0 : m.total;
+    boardLengthMatch = m.lengthMatch;
+    boardWidthMatch = m.widthMatch;
+    m.boardPerfect ? (++okCount) : (++ngCount);
+    ++totalCount;
     qDebug()<< m.magicNum<< m.length<< m.boardPerfect<< m.width<< m.serialNum<< m.total;
     //qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
     emit refresh();
