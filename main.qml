@@ -7,8 +7,8 @@ import com.shelly 1.0
 ApplicationWindow {
     id:root
     visible: true
-    width: Screen.desktopAvailableWidth > 600 ? 300 : Screen.desktopAvailableWidth
-    height: Screen.desktopAvailableWidth > 600 ? 500 : Screen.desktopAvailableHeight
+    width: Screen.desktopAvailableWidth
+    height: Screen.desktopAvailableWidth
     title: qsTr("online-test")
 
     ListView {
@@ -39,7 +39,6 @@ ApplicationWindow {
             Text{id:portedit; anchors.top:ipedit.bottom}
             Connection{
                 id:ipconfig
-                onSetIP:{ipedit.text=ip; portedit.text=port}
             }
         }
         Keys.onEscapePressed: {
@@ -48,11 +47,9 @@ ApplicationWindow {
 
         Keys.onPressed:{
             if ((event.key == Qt.Key_Q) && (event.modifiers & Qt.ControlModifier)){
-                console.log("pressed");
                 Qt.quit();
             }
             Keys.forwardTo[tabBar]
-            console.log("not in ")
         }
         states:[
             State{
@@ -123,6 +120,7 @@ ApplicationWindow {
 
     footer: TabBar {
         id: tabBar
+        visible:false
         height:40
 
         currentIndex: swipeView.currentIndex

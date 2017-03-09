@@ -10,16 +10,18 @@
 #include <QRegExp>
 
 struct boardInfo{
-    quint32 magicNum;//魔数默认123456,用来匹配数据
-    char* serialNum;//序列号
-    quint16 length;//长度信息
-    quint16 width;//宽度信息
-    quint32 total;//总数信息
-    quint32 ngcount;//有缺陷板数量
-    quint32 okcount;//完美板数量
-    quint8 lengthMatch;//指示板长是否匹配 匹配为0, 不匹配为除零外任意数
-    quint8 widthMatch;//指示板宽是否匹配 匹配为0, 不匹配为除零外任意数
-    quint8 boardPerfect;//指示是否有缺陷 完美0, 不不完美为除零外任意数
+    qint32 magicNum=-1;//魔数默认123456,用来匹配数据
+    QString serialNum;//序列号
+    qreal length=-1.0;//长度信息
+    qreal width=-1.0;//宽度信息
+    qreal realWidth = 0.0;
+    qreal realLength = 0.0;
+    qint32 total=-1;//总数信息
+    qint32 ngcount=-1;//有缺陷板数量
+    qint32 okcount=-1;//完美板数量
+    qint8 lengthMatch=-1;//指示板长是否匹配 匹配为0, 不匹配为除零外任意数
+    qint8 widthMatch=-1;//指示板宽是否匹配 匹配为0, 不匹配为除零外任意数
+    qint8 boardPerfect=-1;//指示是否有缺陷 完美0, 不不完美为除零外任意数
 
 };
 
@@ -37,8 +39,12 @@ public:
     Q_INVOKABLE quint32 getBoardNG() const;
     Q_INVOKABLE quint32 getBoardTotal() const;
     Q_INVOKABLE QString getSerialNum()const ;
-    Q_INVOKABLE quint32 getBoardWidth() const ;
-    Q_INVOKABLE quint32 getBoardHeight() const;
+    Q_INVOKABLE qreal getBoardWidth() const ;
+    Q_INVOKABLE qreal getBoardLength() const;
+    Q_INVOKABLE qreal getRealBoardWidth() const ;
+    Q_INVOKABLE qreal getRealBoardLength() const;
+    Q_INVOKABLE qint8 getBoardWidthMatch() const;
+    Q_INVOKABLE qint8 getBoardLengthMatch() const;
     Q_INVOKABLE void reConnect() const;
     Q_INVOKABLE void setServerIP(const QString ip);
     Q_INVOKABLE void setServerPort(const quint32 port);
@@ -59,7 +65,9 @@ public:
 
 private:
     quint32 totalCount, ngCount, okCount;
-    quint32 boardWidth, boardHeight;
+    qreal boardWidth, boardLength;
+    qreal realBoardWidth, realBoardLength;
+    qint8 boardWidthMatch, boardLengthMatch;
     QString serialNumber;
     QTcpSocket *tcpSocket;
     QTcpSocket *dataSocket;
@@ -93,9 +101,8 @@ inline QDataStream &operator>>(QDataStream &in, struct boardInfo &board)
         board.magicNum = 0;
         return in;
     }
-    in>>board.serialNum>> board.length>> board.width>>
-        board.total>> board.ngcount>> board.okcount>>
-            board.lengthMatch>> board.widthMatch>> board.boardPerfect;
+    in>>board.serialNum>> board.length>> board.width>> board.realWidth>>board.realLength>>
+        board.total>> board.ngcount>> board.okcount>> board.lengthMatch>> board.widthMatch>>board.boardPerfect;
     return in;
 }
 
