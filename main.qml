@@ -17,28 +17,58 @@ ApplicationWindow {
         currentIndex: tabBar.currentIndex
 
         focus: true
+        Network{
+            id:network
+        }
+        Connections{
+            target: network
+            onRefresh:{
+                page1.okCount = network.getBoardOK()
+                page1.realLength = network.getRealBoardLength();
+                page1.realWidth = network.getRealBoardWidth();
+                page1.mwidth = network.getBoardWidth();
+                page1.mlength = network.getBoardLength();
+                page1.serialNum = network.getSerialNum();
+                console.log(network.getBoardLength())
+            }
+        }
+        Connections{
+            target:network
+            onBoardRefresh:{
+                page2.okCount = network.getBoardOK();
+                page2.ngCount = network.getBoardNG();
+                page2.totalCount = network.getBoardTotal();
+                page2.rate = page2.totalCount == 0 ? 0 : (page2.ngCount / page2.totalCount * 100).toFixed(2);
+            }
+        }
 
         Page1 {
-            id: page
+            id: page1
             x: 0
             y: 0
             antialiasing: true
             scale: 1
             z: 1
             rotation: 0
-        }
-        Rectangle{
-            id: rect
-            x: 301
-            y: 0
-            Network{
-                id:network
+            onConnect: {
+                network.setDevice(dev)
+                network.setServerIP(ip)
             }
-
-            Text{id:ipedit; anchors.verticalCenter: parent.verticalCenter}
-            Text{id:portedit; anchors.top:ipedit.bottom}
-            Connection{
-                id:ipconfig
+            onDisconnect: {
+                network.disconn();
+            }
+        }
+        Connection{
+            id:page2
+            antialiasing: true
+            x:root.width
+            y:0
+            onConnect:{
+                network.setDevice(dev)
+                network.setServerIP(ip)
+            }
+            onDisconnect: {
+                network.disconn()
             }
         }
         Keys.onEscapePressed: {
@@ -54,13 +84,13 @@ ApplicationWindow {
         states:[
             State{
                 name:"firstPage"; when:swipeView.currentIndex == 2;
-                PropertyChanges{target:rect; x:root.width}
-                PropertyChanges{target:page; x:0}
+                PropertyChanges{target:page2; x:root.width}
+                PropertyChanges{target:page1; x:0}
             },
             State{
                 name:"secondPage"; when:swipeView.currentIndex == 1;
-                PropertyChanges{target:rect; x:0}
-                PropertyChanges{target:page; x:-root.width}
+                PropertyChanges{target:page2; x:0}
+                PropertyChanges{target:page1; x:-root.width}
             }
         ]
 

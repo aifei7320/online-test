@@ -79,6 +79,7 @@ private:
 
 Q_SIGNALS:
     void refresh();
+    void boardRefresh();
     void networkStateChanged(QAbstractSocket::SocketState );
     void ipError();
 

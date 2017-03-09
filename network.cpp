@@ -6,6 +6,7 @@ Network::Network(QObject *parent):QObject(parent),
     boardLength(1.0), boardWidth(1.0),
     serverIP("192.168.0.94"), serverPort(7320)
 {
+    qDebug()<<"init";
     tcpSocket = new QTcpSocket;
     server = new QTcpServer;
     server->listen(QHostAddress::Any, 7321);
@@ -98,6 +99,7 @@ void Network::setServerIP(const QString ip)
     } else {
         emit ipError();
     }
+    qDebug()<<"wrong" ;
 }
 
 void Network::setDevice(const QString dev)
@@ -147,7 +149,12 @@ void Network::getInfoFromHost()
     ++totalCount;
     qDebug()<< m.magicNum<< m.length<< m.boardPerfect<< m.width<< m.serialNum<< m.total;
     qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
-    emit refresh();
+    if (m.boardPerfect == -1)
+        emit refresh();
+    else{
+        emit boardRefresh();
+        qDebug()<<"boardRefresh";
+    }
 }
 
 void Network::connToHost()

@@ -6,9 +6,6 @@ import QtQuick.Window 2.2
 import QtQuick.Dialogs 1.2
 import com.shelly 1.0
 
-Item {
-    property alias boardSize: boardSize
-
     Rectangle{
         id:root
         width: Screen.desktopAvailableWidth
@@ -17,24 +14,21 @@ Item {
         property int okCount;
         property int ngCount;
         property int totalCount;
-        property real boardWidth;
-        property real boardLength;
-        property real realBoardWidth;
-        property real realBoardLength;
         property string serialNum;
-        property int boardWidthMatch;
-        property int boardLengthMatch;
         property real rate;
 
         signal showIpError();
+        signal connect(string ip, string dev);
+        signal disconnect();
 
         onShowIpError: {
             ipErrorHint.visible=true
         }
 
-        Network{
-            id:secondNetwork
-        }
+        onOkCountChanged: dispOKCount.text = okCount;
+        onNgCountChanged: dispNgCount.text = ngCount;
+        onTotalCountChanged: dispTotalCount.text = totalCount;
+        onRateChanged: dispRate.text = rate;
 
         MessageDialog{
             id:ipErrorHint
@@ -52,15 +46,6 @@ Item {
             GradientStop{position:1.0; color: "cyan"}
         }
         ColumnLayout{
-
-            RowLayout{
-                Layout.alignment: Qt.AlignLeft
-                Layout.topMargin:20
-                Layout.leftMargin:10
-
-                Label {id:serialNum; text:"条码:"; font{pixelSize:16; bold:true }Layout.alignment:Qt.AlignLeft}
-                Label {id:dispSerialNum; text:"";horizontalAlignment:Qt.AlignRight; background:Item{Rectangle {anchors.fill: parent; color: "white"; }}}
-            }
 
             GroupBox{
                 Layout.minimumWidth: root.width - 20
@@ -98,41 +83,6 @@ Item {
                 }
             }
 
-            GroupBox{
-                id:widthAndHeight
-               Layout.minimumWidth: root.width - 20
-               Layout.alignment: Qt.AlignHCenter
-               Layout.leftMargin:10
-               Layout.rightMargin:10
-
-               GridLayout{
-                   width: parent.width
-                   height: 67
-                    rows: 4
-                    columns: 3
-                    columnSpacing: 10
-                    Layout.fillWidth:true
-
-                    Label {id:boardSize; text:"木板尺寸测量"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
-                        font{pixelSize:20;bold:true; family:"Ubuntu"} Layout.columnSpan: 3}
-
-                    Label {id:realBoardWidth; text:"目标宽度:"; Layout.alignment: Qt.AlignLeft}
-                    Label {id:dispRealBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
-                    Label {id:widthUnitReal; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
-
-                    Label {id:boardWidth; text:"木板宽度:"; Layout.alignment: Qt.AlignLeft}
-                    Label {id:dispBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
-                    Label {id:widthUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
-
-                    Label {id:realBoardLength; text:"目标长度:"}
-                    Label {id:dispRealBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
-                    Label {id:heightUnitReal; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
-
-                    Label {id:boardLength; text:"木板长度:"}
-                    Label {id:dispBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
-                    Label {id:heightUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
-                }
-            }
             RowLayout{
                 Layout.alignment: Qt.AlignLeft
                 Layout.topMargin:5
@@ -157,46 +107,46 @@ Item {
             }
 
             RowLayout{
-                id:btnlayout
+                id:layout
                 spacing:20
                 Layout.topMargin:5
                 Layout.alignment: Qt.AlignHCenter
                 Button{
-                    id:connectBtn
+                    id:connect
                     height:ip.height
                     text:"连接"
                     background: Rectangle {
                               implicitWidth: 140
                               implicitHeight: 40
                               opacity: enabled ? 1 : 0.3
-                              color: connectBtn.down ? "#d0d0d0" : "#e0e0e0"
+                              color: connect.down ? "#d0d0d0" : "#e0e0e0"
                               radius: 20
                       }
                     onPressed: {
-                        secondNetwork.setServerIP(ipdisp.text);
-                        secondNetwork.setDevice(devdisp.text);
+                        console.log("pressed")
+                        root.connect(ipdisp.text, devdisp.text)
                     }
                 }
                 Button{
-                    id:disconnectBtn
+                    id:disconnect
                     height:ip.height
                     text:"断开"
                     background: Rectangle {
                               implicitWidth: 140
                               implicitHeight: 40
                               opacity: enabled ? 1 : 0.3
-                              color: disconnectBtn.down ? "#d0d0d0" : "#e0e0e0"
+                              color: disconnect.down ? "#d0d0d0" : "#e0e0e0"
                               radius: 20
                           }
-                    onClicked:{
-                        secondNetwork.disconn();
+                    onPressed:{
+                        root.disconnect();
                     }
                 }
             }
             NetworkStatus{
-                id:networkStatus
+                id:boardNetworkStatus
                 width:parent.width;
-                anchors.top:btnlayout.bottom
+                anchors.top:layout.bottom
                 run:true
             }
 
@@ -207,49 +157,4 @@ Item {
             }
         }
 
-
-        Connections{
-            target:secondNetwork
-            onRefresh:{
-                root.okCount=secondNetwork.getBoardOK();
-                root.ngCount=secondNetwork.getBoardNG();
-                root.totalCount=secondNetwork.getBoardTotal();
-                root.serialNum=secondNetwork.getSerialNum();
-                root.boardWidth=secondNetwork.getBoardWidth().toFixed(1);
-                root.boardLength=secondNetwork.getBoardLength().toFixed(1);
-                root.realBoardWidth=secondNetwork.getRealBoardWidth().toFixed(1);
-                root.realBoardLength=secondNetwork.getRealBoardLength().toFixed(1);
-                root.boardLengthMatch = secondNetwork.getBoardLengthMatch();
-                root.boardWidthMatch = secondNetwork.getBoardWidthMatch();
-                dispOKCount.text=root.okCount;
-                dispNgCount.text=root.ngCount;
-                dispTotalCount.text=root.totalCount;
-                dispRate.text=root.totalCount == 0 ? 0 : (root.okCount / root.totalCount * 100.0).toFixed(2);
-                dispBoardLength.text=root.boardLength;
-                dispBoardWidth.text=root.boardWidth;
-                dispRealBoardLength.text=root.realBoardLength;
-                dispRealBoardWidth.text=root.realBoardWidth;
-                dispSerialNum.text=root.serialNum;
-                dispBoardWidth.color=root.boardWidthMatch ? "black" : "red"
-                dispBoardLength.color=root.boardLengthMatch ? "black" : "red"
-                console.log("second");
-            }
-        }
-
-        Connections{
-            target:secondNetwork
-            onIpError:{
-                root.showIpError();
-            }
-        }
-
-        Connections{
-            target:secondNetwork
-            onNetworkStateChanged:{
-                networkStatus.stateNum=secondNetwork.state()
-            }
-        }
-
-
     }
-}

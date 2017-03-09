@@ -20,7 +20,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
+    qRegisterMetaType<boardInfo>();
     qmlRegisterType<Network> ("com.shelly", 1, 0, "Network");
+    qmlRegisterType<Network> ("com.shelly1", 1, 0, "BoardNetwork");
 
 
     QQmlApplicationEngine engine;
