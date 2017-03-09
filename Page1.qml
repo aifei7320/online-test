@@ -11,14 +11,16 @@ Item {
 
     Rectangle{
         id:root
-        width: Screen.desktopAvailableWidth > 600 ? 300 : Screen.desktopAvailableWidth
-        height: Screen.desktopAvailableWidth > 600 ? 500 : Screen.desktopAvailableHeight
+        width: Screen.desktopAvailableWidth
+        height: Screen.desktopAvailableHeight
 
         property int okCount;
         property int ngCount;
         property int totalCount;
-        property int boardWidth;
-        property int boardLength;
+        property real boardWidth;
+        property real boardLength;
+        property real realBoardWidth;
+        property real realBoardLength;
         property string serialNum;
         property int boardWidthMatch;
         property int boardLengthMatch;
@@ -87,7 +89,7 @@ Item {
                     Label {id:dispNgUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
                     Label {id: totalLabel; text:"总数量:"; horizontalAlignment: Qt.AlignCenter}
-                    Label {id: dispTotalCount; Layout.fillWidth:true; color:"black"; text:"1";  horizontalAlignment: Qt.AlignRight}
+                    Label {id: dispTotalCount; Layout.fillWidth:true; color:"black"; text:"0";  horizontalAlignment: Qt.AlignRight}
                     Label {id:dispTotalUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
                     Label {id: rateLabel; text:"缺陷率:"; horizontalAlignment: Qt.AlignCenter}
@@ -106,7 +108,7 @@ Item {
                GridLayout{
                    width: parent.width
                    height: 67
-                    rows: 3
+                    rows: 4
                     columns: 3
                     columnSpacing: 10
                     Layout.fillWidth:true
@@ -114,9 +116,17 @@ Item {
                     Label {id:boardSize; text:"木板尺寸测量"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
                         font{pixelSize:20;bold:true; family:"Ubuntu"} Layout.columnSpan: 3}
 
+                    Label {id:realBoardWidth; text:"目标宽度:"; Layout.alignment: Qt.AlignLeft}
+                    Label {id:dispRealBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
+                    Label {id:widthUnitReal; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
+
                     Label {id:boardWidth; text:"木板宽度:"; Layout.alignment: Qt.AlignLeft}
                     Label {id:dispBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
                     Label {id:widthUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
+
+                    Label {id:realBoardLength; text:"目标长度:"}
+                    Label {id:dispRealBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
+                    Label {id:heightUnitReal; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
 
                     Label {id:boardLength; text:"木板长度:"}
                     Label {id:dispBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
@@ -149,7 +159,7 @@ Item {
             RowLayout{
                 id:btnlayout
                 spacing:20
-                Layout.topMargin:50
+                Layout.topMargin:5
                 Layout.alignment: Qt.AlignHCenter
                 Button{
                     id:connectBtn
@@ -205,8 +215,10 @@ Item {
                 root.ngCount=network.getBoardNG();
                 root.totalCount=network.getBoardTotal();
                 root.serialNum=network.getSerialNum();
-                root.boardWidth=network.getBoardWidth();
-                root.boardLength=network.getBoardLength();
+                root.boardWidth=network.getBoardWidth().toFixed(1);
+                root.boardLength=network.getBoardLength().toFixed(1);
+                root.realBoardWidth=network.getRealBoardWidth().toFixed(1);
+                root.realBoardLength=network.getRealBoardLength().toFixed(1);
                 root.boardLengthMatch = network.getBoardLengthMatch();
                 root.boardWidthMatch = network.getBoardWidthMatch();
                 dispOKCount.text=root.okCount;
@@ -215,13 +227,11 @@ Item {
                 dispRate.text=root.totalCount == 0 ? 0 : (root.okCount / root.totalCount * 100.0).toFixed(2);
                 dispBoardLength.text=root.boardLength;
                 dispBoardWidth.text=root.boardWidth;
+                dispRealBoardLength.text=root.realBoardLength;
+                dispRealBoardWidth.text=root.realBoardWidth;
                 dispSerialNum.text=root.serialNum;
-                boardWidth.color=root.boardWidthMatch ? "black" : "red"
                 dispBoardWidth.color=root.boardWidthMatch ? "black" : "red"
-                boardLength.color=root.boardLengthMatch ? "black" : "red"
                 dispBoardLength.color=root.boardLengthMatch ? "black" : "red"
-                console.log("actived refresh");
-                console.log(root.boardLength);
             }
         }
 
@@ -236,8 +246,6 @@ Item {
             target:network
             onNetworkStateChanged:{
                 networkStatus.stateNum=network.state()
-                console.log("state changed")
-                console.log(networkStatus.stateNum)
             }
         }
 

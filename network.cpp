@@ -38,12 +38,22 @@ quint8 Network::state() const
     return st;
 }
 
-quint32 Network::getBoardLength() const
+qreal Network::getRealBoardLength() const
+{
+    return realBoardLength;
+}
+
+qreal Network::getRealBoardWidth() const
+{
+    return realBoardWidth;
+}
+
+qreal Network::getBoardLength() const
 {
     return boardLength;
 }
 
-quint32 Network::getBoardWidth() const
+qreal Network::getBoardWidth() const
 {
     return boardWidth;
 }
@@ -129,12 +139,14 @@ void Network::getInfoFromHost()
     serialNumber = m.serialNum;
     boardWidth = m.width;
     boardLength = m.length;
+    realBoardWidth = m.realWidth;
+    realBoardLength = m.realLength;
     boardLengthMatch = m.lengthMatch;
     boardWidthMatch = m.widthMatch;
     m.boardPerfect ? (++okCount) : (++ngCount);
     ++totalCount;
     qDebug()<< m.magicNum<< m.length<< m.boardPerfect<< m.width<< m.serialNum<< m.total;
-    //qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
+    qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
     emit refresh();
 }
 

@@ -7,8 +7,8 @@ import com.shelly 1.0
 ApplicationWindow {
     id:root
     visible: true
-    width: Screen.desktopAvailableWidth > 600 ? 300 : Screen.desktopAvailableWidth
-    height: Screen.desktopAvailableWidth > 600 ? 500 : Screen.desktopAvailableHeight
+    width: Screen.desktopAvailableWidth
+    height: Screen.desktopAvailableWidth
     title: qsTr("online-test")
 
     ListView {
@@ -48,11 +48,9 @@ ApplicationWindow {
 
         Keys.onPressed:{
             if ((event.key == Qt.Key_Q) && (event.modifiers & Qt.ControlModifier)){
-                console.log("pressed");
                 Qt.quit();
             }
             Keys.forwardTo[tabBar]
-            console.log("not in ")
         }
         states:[
             State{

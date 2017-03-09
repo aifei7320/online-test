@@ -12,8 +12,8 @@
 struct boardInfo{
     qint32 magicNum=-1;//魔数默认123456,用来匹配数据
     QString serialNum;//序列号
-    qint16 length=-1;//长度信息
-    qint16 width=-1;//宽度信息
+    qreal length=-1.0;//长度信息
+    qreal width=-1.0;//宽度信息
     qreal realWidth = 0.0;
     qreal realLength = 0.0;
     qint32 total=-1;//总数信息
@@ -39,8 +39,10 @@ public:
     Q_INVOKABLE quint32 getBoardNG() const;
     Q_INVOKABLE quint32 getBoardTotal() const;
     Q_INVOKABLE QString getSerialNum()const ;
-    Q_INVOKABLE quint32 getBoardWidth() const ;
-    Q_INVOKABLE quint32 getBoardLength() const;
+    Q_INVOKABLE qreal getBoardWidth() const ;
+    Q_INVOKABLE qreal getBoardLength() const;
+    Q_INVOKABLE qreal getRealBoardWidth() const ;
+    Q_INVOKABLE qreal getRealBoardLength() const;
     Q_INVOKABLE qint8 getBoardWidthMatch() const;
     Q_INVOKABLE qint8 getBoardLengthMatch() const;
     Q_INVOKABLE void reConnect() const;
@@ -63,7 +65,8 @@ public:
 
 private:
     quint32 totalCount, ngCount, okCount;
-    quint32 boardWidth, boardLength;
+    qreal boardWidth, boardLength;
+    qreal realBoardWidth, realBoardLength;
     qint8 boardWidthMatch, boardLengthMatch;
     QString serialNumber;
     QTcpSocket *tcpSocket;
@@ -100,7 +103,6 @@ inline QDataStream &operator>>(QDataStream &in, struct boardInfo &board)
     }
     in>>board.serialNum>> board.length>> board.width>> board.realWidth>>board.realLength>>
         board.total>> board.ngcount>> board.okcount>> board.lengthMatch>> board.widthMatch>>board.boardPerfect;
-    qDebug()<< board.magicNum<< board.length<< board.boardPerfect<< board.width<< board.serialNum<< board.total;
     return in;
 }
 
