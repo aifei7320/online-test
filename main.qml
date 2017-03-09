@@ -39,7 +39,6 @@ ApplicationWindow {
             Text{id:portedit; anchors.top:ipedit.bottom}
             Connection{
                 id:ipconfig
-                onSetIP:{ipedit.text=ip; portedit.text=port}
             }
         }
         Keys.onEscapePressed: {
@@ -121,7 +120,7 @@ ApplicationWindow {
 
     footer: TabBar {
         id: tabBar
-        visible:false
+        visible:true
         height:40
 
         currentIndex: swipeView.currentIndex
