@@ -39,6 +39,10 @@ ApplicationWindow {
                 page1.serialNumber = network.getSerialNum();
                 page1.boardLengthMatch = network.getBoardLengthMatch()
                 page1.boardWidthMatch = network.getBoardWidthMatch()
+                page1.totalCount = network.getBoardTotal()
+                page1.ngCount = network.getBoardNG()
+                page1.okCount = network.getBoardOK()
+                page1.rate = page1.totalCount == 0 ? 0 : (page1.okCount / page1.totalCount * 100).toFixed(2)
             }
         }
         Connections{
@@ -47,7 +51,8 @@ ApplicationWindow {
                 page2.okCount = network.getBoardOK();
                 page2.ngCount = network.getBoardNG();
                 page2.totalCount = network.getBoardTotal();
-                page2.rate = page2.totalCount == 0 ? 0 : (page2.ngCount / page2.totalCount * 100).toFixed(2);
+                page2.bbCount = page2.ngCount
+                page2.rate = page2.totalCount == 0 ? 0 : (page2.okCount / page2.totalCount * 100).toFixed(2);
             }
         }
 
@@ -65,6 +70,12 @@ ApplicationWindow {
             }
             onDisconnect: {
                 network.disconn();
+            }
+            Connections{
+                target:network
+                onIpError:{
+                    page1.showIpError()
+                }
             }
         }
         Connection{
@@ -137,8 +148,8 @@ ApplicationWindow {
         id:title
         width:parent.width
         horizontalAlignment:Text.AlignHCenter
-        text:"Online-test System"
-        font{pixelSize:20; family:"Ubuntu"}
+        text:"SCAN系列家居智能工业4.0整体解决方案"
+        font{pixelSize:15; family:"Ubuntu"}
         color:"red"
         background: Rectangle{
             gradient:Gradient{

@@ -29,6 +29,9 @@ Network::~Network()
 
 void Network::disconn()
 {
+    totalCount = 0;
+    okCount = 0;
+    ngCount = 0;
     if(dataSocket != NULL)
         dataSocket->disconnectFromHost();
     qDebug()<<"disconnect";
@@ -147,8 +150,14 @@ void Network::getInfoFromHost()
     boardWidthMatch = m.widthMatch ? '1':'0';
     qDebug()<< m.magicNum<< m.length<< m.boardPerfect<< m.width<< m.serialNum<< m.total;
     qDebug()<<temp<<" "<<boardWidthMatch<<" "<<boardLength<<" "<<realBoardWidth;
-    if (m.boardPerfect == 'e')
+    if (m.boardPerfect == 'e'){
+        if (m.lengthMatch && m.widthMatch)
+            okCount++;
+        else
+            ngCount++;
+        ++totalCount;
         emit refresh();
+    }
     else{
         m.boardPerfect ? (++okCount) : (++ngCount);
         ++totalCount;

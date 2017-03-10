@@ -65,54 +65,46 @@ import com.shelly 1.0
             GradientStop{position:1.0; color: "cyan"}
         }
         ColumnLayout{
-
             RowLayout{
-                Layout.alignment: Qt.AlignLeft
-                Layout.topMargin:20
-                Layout.leftMargin:10
+                Label{id:title; text:"云尺"; font{pixelSize:20;family:"Ubuntu";bold:true} horizontalAlignment:Text.AlignHCenter; color:"brown";width:parent.width; Layout.fillWidth: true; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter}
+                Image{width: 10; height: 10;scale: 1; source: "qrc:/logo.png"}
+            }
+            GroupBox{
+                Layout.minimumWidth: root.width - 20
+                Layout.alignment: Qt.AlignHCenter
 
-                Label {id:serialNum; text:"条码:"; font{pixelSize:16; bold:true }Layout.alignment:Qt.AlignLeft}
-                Label {id:dispSerialNum; text:"";horizontalAlignment:Qt.AlignRight; background:Item{Rectangle {anchors.fill: parent; color: "white"; }}}
+                GridLayout{
+                    width: parent.width
+                    rows: 5
+                    columns: 3
+                    Layout.fillWidth: true
+                    rowSpacing: 0
+                    columnSpacing: 10
+
+                    Label {id:boardDetection; text:"统计信息";
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                        font{pixelSize:15;bold:true; family:"Ubuntu" } color:"brown";
+                        Layout.columnSpan:3; horizontalAlignment: Text.AlignHCenter}
+
+                    Label {id: totalLabel; text:"总数量:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id: dispTotalCount; Layout.fillWidth:true; color:"black"; text:"0";  horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispTotalUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: okLabel; text:"完好数量:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispOKCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Text.AlignRight}
+                    Label {id:dispOKUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: ngLabel; text:"缺陷数量:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispNgCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispNgUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: rateLabel; text:"合格率:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispRate; Layout.fillWidth:true; color:"black"; text:"0" ;horizontalAlignment: Text.AlignRight}
+                    Label {id:dispRateUnit; Layout.minimumWidth:30; color:"black"; text:"%"; horizontalAlignment:Text.AlignRight}
+                }
             }
 
-            //GroupBox{
-            //    Layout.minimumWidth: root.width - 20
-            //    Layout.margins:10
-            //    Layout.alignment: Qt.AlignHCenter
-
-            //    GridLayout{
-            //        width: parent.width
-            //        height: 129
-            //        rows: 5
-            //        columns: 3
-            //        Layout.fillWidth: true
-            //        columnSpacing: 10
-
-            //        Label {id:boardDetection; text:"封边检测";
-            //            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            //            font{pixelSize:20;bold:true; family:"Ubuntu" } color:"brown";
-            //            Layout.columnSpan:3; horizontalAlignment: Text.AlignHCenter}
-
-            //        Label {id: okLabel; text:"完好数量:"; horizontalAlignment: Qt.AlignCenter}
-            //        Label {id:dispOKCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Text.AlignRight}
-            //        Label {id:dispOKUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
-
-            //        Label {id: ngLabel; text:"缺陷数量:"; horizontalAlignment: Qt.AlignCenter}
-            //        Label {id:dispNgCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
-            //        Label {id:dispNgUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
-
-            //        Label {id: totalLabel; text:"总数量:"; horizontalAlignment: Qt.AlignCenter}
-            //        Label {id: dispTotalCount; Layout.fillWidth:true; color:"black"; text:"0";  horizontalAlignment: Qt.AlignRight}
-            //        Label {id:dispTotalUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
-
-            //        Label {id: rateLabel; text:"缺陷率:"; horizontalAlignment: Qt.AlignCenter}
-            //        Label {id:dispRate; Layout.fillWidth:true; color:"black"; text:"0" ;horizontalAlignment: Text.AlignRight}
-            //        Label {id:dispRateUnit; Layout.minimumWidth:30; color:"black"; text:"%"; horizontalAlignment:Text.AlignRight}
-            //    }
-            //}
-
             GroupBox{
-                id:widthAndHeight
                Layout.minimumWidth: root.width - 20
                Layout.alignment: Qt.AlignHCenter
                Layout.leftMargin:10
@@ -124,31 +116,55 @@ import com.shelly 1.0
                     rows: 4
                     columns: 3
                     columnSpacing: 10
+                    rowSpacing: 0
                     Layout.fillWidth:true
 
-                    Label {id:boardSize; text:"木板尺寸测量"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
-                        font{pixelSize:20;bold:true; family:"Ubuntu"} Layout.columnSpan: 3}
+                    Label {id:boardSize; text:"ERP 数据"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
+                        font{pixelSize:15;bold:true; family:"Ubuntu"} Layout.columnSpan: 3}
+                    Label {id:serialNum; text:"条码:"; font{pixelSize:16; bold:true }Layout.alignment:Qt.AlignLeft}
+                    Label {id:dispSerialNum; text:"";horizontalAlignment:Qt.AlignRight; Layout.columnSpan: 2;}
 
-                    Label {id:realBoardWidth; text:"目标宽度:"; Layout.alignment: Qt.AlignLeft}
+                    Label {id:realBoardLength; text:"长:"}
+                    Label {id:dispRealBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
+                    Label {id:heightUnitReal; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
+
+                    Label {id:realBoardWidth; text:"宽:"; Layout.alignment: Qt.AlignLeft}
                     Label {id:dispRealBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
                     Label {id:widthUnitReal; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
+
+                }
+            }
+
+            GroupBox{
+               Layout.minimumWidth: root.width - 20
+               Layout.alignment: Qt.AlignHCenter
+               Layout.leftMargin:10
+               Layout.rightMargin:10
+
+               GridLayout{
+                   width: parent.width
+                   height: 67
+                    rows: 4
+                    columns: 3
+                    columnSpacing: 10
+                    rowSpacing: 0
+                    Layout.fillWidth:true
+
+                    Label {text:"实测数据"; Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter; color:"brown";
+                        font{pixelSize:15;bold:true; family:"Ubuntu"} Layout.columnSpan: 3}
+
+                    Label {id:boardLength; text:"木板长度:"}
+                    Label {id:dispBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
+                    Label {id:heightUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
 
                     Label {id:boardWidth; text:"木板宽度:"; Layout.alignment: Qt.AlignLeft}
                     Label {id:dispBoardWidth; text:"0"; Layout.fillWidth:true; horizontalAlignment:Text.AlignRight}
                     Label {id:widthUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
 
-                    Label {id:realBoardLength; text:"目标长度:"}
-                    Label {id:dispRealBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
-                    Label {id:heightUnitReal; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
-
-                    Label {id:boardLength; text:"木板长度:"}
-                    Label {id:dispBoardLength; text:"0"; Layout.fillWidth: true; horizontalAlignment:Text.AlignRight}
-                    Label {id:heightUnit; Layout.minimumWidth:30; text:"mm"; horizontalAlignment:Text.AlignRight}
                 }
             }
             RowLayout{
                 Layout.alignment: Qt.AlignLeft
-                Layout.topMargin:5
 
                 Label{id:ip; text:"IP  地址:   "; Layout.leftMargin:10}
                 TextField{
@@ -163,7 +179,6 @@ import com.shelly 1.0
 
             RowLayout{
                 Layout.alignment: Qt.AlignLeft
-                Layout.topMargin:5
 
                 Label{id:dev; text:"设备编号: ";width:ip.width;  Layout.leftMargin:10}
                 TextField{id:devdisp;Layout.rightMargin:10; Layout.fillWidth:true; Layout.alignment: Qt.AlignRight; placeholderText:"设备编号" }

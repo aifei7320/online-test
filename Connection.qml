@@ -13,6 +13,7 @@ import com.shelly 1.0
 
         property int okCount;
         property int ngCount;
+        property int bbCount;
         property int totalCount;
         property string serialNum;
         property real rate;
@@ -31,6 +32,7 @@ import com.shelly 1.0
         onTotalCountChanged: dispTotalCount.text = totalCount;
         onRateChanged: dispRate.text = rate;
         onStatenumChanged: networkStatus.stateNum = statenum
+        onBbCountChanged: dispBbCount.text = bbCount
 
         MessageDialog{
             id:ipErrorHint
@@ -48,7 +50,14 @@ import com.shelly 1.0
             GradientStop{position:1.0; color: "cyan"}
         }
         ColumnLayout{
-
+            RowLayout{
+            Label {id:boardDetection; text:"崩边在线检测系统";
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.fillWidth: true
+                font{pixelSize:30;bold:true; family:"Ubuntu" } color:"brown";
+                Layout.columnSpan:3; horizontalAlignment: Text.AlignHCenter}
+            Image{source: "qrc:/logo.png"; }
+            }
             GroupBox{
                 Layout.minimumWidth: root.width - 20
                 Layout.margins:10
@@ -56,30 +65,36 @@ import com.shelly 1.0
 
                 GridLayout{
                     width: parent.width
-                    height: 129
-                    rows: 5
+                    rows: 3
                     columns: 3
                     Layout.fillWidth: true
                     columnSpacing: 10
-
-                    Label {id:boardDetection; text:"封边检测";
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        font{pixelSize:20;bold:true; family:"Ubuntu" } color:"brown";
-                        Layout.columnSpan:3; horizontalAlignment: Text.AlignHCenter}
-
-                    Label {id: okLabel; text:"完好数量:"; horizontalAlignment: Qt.AlignCenter}
-                    Label {id:dispOKCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Text.AlignRight}
-                    Label {id:dispOKUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
-
-                    Label {id: ngLabel; text:"缺陷数量:"; horizontalAlignment: Qt.AlignCenter}
-                    Label {id:dispNgCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
-                    Label {id:dispNgUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
                     Label {id: totalLabel; text:"总数量:"; horizontalAlignment: Qt.AlignCenter}
                     Label {id: dispTotalCount; Layout.fillWidth:true; color:"black"; text:"0";  horizontalAlignment: Qt.AlignRight}
                     Label {id:dispTotalUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
 
-                    Label {id: rateLabel; text:"缺陷率:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id: okLabel; text:"完好数量:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispOKCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Text.AlignRight}
+                    Label {id:dispOKUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: ngLabel; text:"缺陷总数:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispNgCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispNgUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: bbLabel; text:"崩边缺陷:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispBbCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispBbUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: jbLabel; text:"胶斑缺陷:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispJbCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispJbUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: jfLabel; text:"胶缝缺陷:"; horizontalAlignment: Qt.AlignCenter}
+                    Label {id:dispJfCount; Layout.fillWidth:true; color:"black"; text:"0"; horizontalAlignment: Qt.AlignRight}
+                    Label {id:dispJfUnit; Layout.minimumWidth:30; color:"black"; text:"块";horizontalAlignment:Text.AlignRight}
+
+                    Label {id: rateLabel; text:"合格率:"; horizontalAlignment: Qt.AlignCenter}
                     Label {id:dispRate; Layout.fillWidth:true; color:"black"; text:"0" ;horizontalAlignment: Text.AlignRight}
                     Label {id:dispRateUnit; Layout.minimumWidth:30; color:"black"; text:"%"; horizontalAlignment:Text.AlignRight}
                 }
