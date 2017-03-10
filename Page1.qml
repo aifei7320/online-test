@@ -23,6 +23,7 @@ import com.shelly 1.0
         property int boardWidthMatch;
         property int boardLengthMatch;
         property real rate;
+        property int statenum;
 
         signal showIpError();
         signal connect(string ip, string dev);
@@ -40,8 +41,9 @@ import com.shelly 1.0
         onRealLengthChanged: dispRealBoardLength.text=realLength;
         onRealWidthChanged: dispRealBoardWidth.text=realWidth;
         onSerialNumberChanged: dispSerialNum.text=serialNumber;
-        onBoardWidthMatchChanged: dispBoardWidth.color=boardWidthMatch ? "black" : "red"
-        onBoardLengthMatchChanged: dispBoardLength.color=boardLengthMatch ? "black" : "red"
+        onBoardWidthMatchChanged: dispBoardWidth.color=boardWidthMatch == 49? "black" : "red"
+        onBoardLengthMatchChanged: dispBoardLength.color=boardLengthMatch == 49 ? "black" : "red"
+        onStatenumChanged: networkStatus.stateNum = statenum
 
         //Network{
         //    id:network

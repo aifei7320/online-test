@@ -16,6 +16,7 @@ import com.shelly 1.0
         property int totalCount;
         property string serialNum;
         property real rate;
+        property int statenum
 
         signal showIpError();
         signal connect(string ip, string dev);
@@ -29,6 +30,7 @@ import com.shelly 1.0
         onNgCountChanged: dispNgCount.text = ngCount;
         onTotalCountChanged: dispTotalCount.text = totalCount;
         onRateChanged: dispRate.text = rate;
+        onStatenumChanged: networkStatus.stateNum = statenum
 
         MessageDialog{
             id:ipErrorHint
@@ -144,7 +146,7 @@ import com.shelly 1.0
                 }
             }
             NetworkStatus{
-                id:boardNetworkStatus
+                id:networkStatus
                 width:parent.width;
                 anchors.top:layout.bottom
                 run:true

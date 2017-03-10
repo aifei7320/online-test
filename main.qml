@@ -20,6 +20,14 @@ ApplicationWindow {
         Network{
             id:network
         }
+
+        Connections{
+            target:network
+            onNetworkStateChanged:{
+                page1.statenum = network.state()
+                page2.statenum = network.state()
+            }
+        }
         Connections{
             target: network
             onRefresh:{
@@ -28,8 +36,9 @@ ApplicationWindow {
                 page1.realWidth = network.getRealBoardWidth();
                 page1.mwidth = network.getBoardWidth();
                 page1.mlength = network.getBoardLength();
-                page1.serialNum = network.getSerialNum();
-                console.log(network.getBoardLength())
+                page1.serialNumber = network.getSerialNum();
+                page1.boardLengthMatch = network.getBoardLengthMatch()
+                page1.boardWidthMatch = network.getBoardWidthMatch()
             }
         }
         Connections{

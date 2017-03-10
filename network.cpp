@@ -143,17 +143,16 @@ void Network::getInfoFromHost()
     boardLength = m.length;
     realBoardWidth = m.realWidth;
     realBoardLength = m.realLength;
-    boardLengthMatch = m.lengthMatch;
-    boardWidthMatch = m.widthMatch;
-    m.boardPerfect ? (++okCount) : (++ngCount);
-    ++totalCount;
+    boardLengthMatch = m.lengthMatch ? '1' : '0';
+    boardWidthMatch = m.widthMatch ? '1':'0';
     qDebug()<< m.magicNum<< m.length<< m.boardPerfect<< m.width<< m.serialNum<< m.total;
-    qDebug()<<temp<<" "<<serialNumber<<" "<<boardLength<<" "<<boardWidth;
-    if (m.boardPerfect == -1)
+    qDebug()<<temp<<" "<<boardWidthMatch<<" "<<boardLength<<" "<<realBoardWidth;
+    if (m.boardPerfect == 'e')
         emit refresh();
     else{
+        m.boardPerfect ? (++okCount) : (++ngCount);
+        ++totalCount;
         emit boardRefresh();
-        qDebug()<<"boardRefresh";
     }
 }
 
