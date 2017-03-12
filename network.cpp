@@ -140,6 +140,8 @@ void Network::getInfoFromHost()
     //serialNumber = temp.left(temp.indexOf("s"));
     //boardLength = temp.mid(temp.lastIndexOf("s") + 1, temp.indexOf("l") - temp.lastIndexOf("s") - 1).toInt();
     //boardWidth = temp.mid(temp.lastIndexOf("l") + 1, temp.indexOf("w") - temp.lastIndexOf("l") - 1).toInt();
+    qDebug()<<"byte available"<<dataSocket->bytesAvailable();
+    while(dataSocket->bytesAvailable() >= 83){
     in>>m;
     serialNumber = m.serialNum;
     boardWidth = m.width;
@@ -162,6 +164,7 @@ void Network::getInfoFromHost()
         m.boardPerfect ? (++okCount) : (++ngCount);
         ++totalCount;
         emit boardRefresh();
+    }
     }
 }
 

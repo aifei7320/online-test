@@ -53,6 +53,7 @@ ApplicationWindow {
                 page2.totalCount = network.getBoardTotal();
                 page2.bbCount = page2.ngCount
                 page2.rate = page2.totalCount == 0 ? 0 : (page2.okCount / page2.totalCount * 100).toFixed(2);
+                console.log("al;ksdjf")
             }
         }
 
