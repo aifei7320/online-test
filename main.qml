@@ -177,7 +177,7 @@ ApplicationWindow {
         currentIndex: swipeView.currentIndex
         TabButton {
             height:40
-            text: qsTr("First")
+            text: qsTr("云尺")
             background:Item{
                 Rectangle{
                     anchors.fill:parent; color:"cyan"
@@ -203,7 +203,7 @@ ApplicationWindow {
                     }
                 }
             }
-            text: qsTr("Charts")
+            text: qsTr("崩边")
         }
         Keys.onPressed:{
             switch(event.key){
