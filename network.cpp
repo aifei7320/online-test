@@ -141,8 +141,13 @@ void Network::getInfoFromHost()
     //boardLength = temp.mid(temp.lastIndexOf("s") + 1, temp.indexOf("l") - temp.lastIndexOf("s") - 1).toInt();
     //boardWidth = temp.mid(temp.lastIndexOf("l") + 1, temp.indexOf("w") - temp.lastIndexOf("l") - 1).toInt();
     qDebug()<<"byte available"<<dataSocket->bytesAvailable();
-    while(dataSocket->bytesAvailable() >= 83){
+    while(dataSocket->bytesAvailable() >= 75){
     in>>m;
+    if(m.magicNum == 0){
+        dataSocket->readAll();
+        qDebug()<<"package error";
+        return;
+    }
     serialNumber = m.serialNum;
     boardWidth = m.width;
     boardLength = m.length;
